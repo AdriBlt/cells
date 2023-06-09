@@ -133,6 +133,7 @@ const fractalesPages: Page[] = [
     name: strings.menu.burningShip,
     route: "burning-ship",
     component: <BurningShipFractalGame />,
+    hideMenu: true,
   },
   {
     name: strings.menu.sirpienskiChaosGame,
@@ -196,7 +197,8 @@ const mathsPages: Page[] = [
   {
     name: "Percolation",
     route: 'percolation',
-    component: <PercolationGame />
+    component: <PercolationGame />,
+    hideMenu: true,
   },
   // TODO: SPACE FILLING CURVE (HILBERT)
   // TODO: CIRCLE AND ELIPSE?
@@ -246,6 +248,7 @@ const miscPages: Page[] = [
     name: "Contrade of Sienna",
     route: "contrade-sienna",
     component: <ContradeOfSienna />,
+    hideMenu: true,
   }
 ];
 
