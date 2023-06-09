@@ -8,22 +8,28 @@ export function AppMenu({ menu }: { menu: Menu }) {
         <Navbar expand="lg" bg="dark" variant="dark">
             <Navbar.Brand href={'#' + menu.route}>{menu.name}</Navbar.Brand>
             <Nav className="mr-auto">
-                {menu.categories.map((category: Category) => (
-                    <NavDropdown
-                        key={category.name}
-                        id={category.name}
-                        title={category.name}
-                    >
-                        {category.pages.filter((page: Page) => !page.hideMenu).map((page: Page) => (
-                            <NavDropdown.Item
-                                key={page.route}
-                                href={`#${category.route}/${page.route}`}
-                            >
-                                {page.name}
-                            </NavDropdown.Item>
-                        ))}
-                    </NavDropdown>
-                ))}
+                {menu.categories
+                    .filter((category: Category) => category.pages.some((page: Page) => !page.hideMenu))
+                    .map((category: Category) => (
+                        <NavDropdown
+                            key={category.name}
+                            id={category.name}
+                            title={category.name}
+                        >
+                            {category.pages
+                                .filter((page: Page) => !page.hideMenu)
+                                .map((page: Page) => (
+                                    <NavDropdown.Item
+                                        key={page.route}
+                                        href={`#${category.route}/${page.route}`}
+                                    >
+                                        {page.name}
+                                    </NavDropdown.Item>
+                                ))
+                            }
+                        </NavDropdown>
+                    ))
+                }
             </Nav>
         </Navbar>
     );
