@@ -1,6 +1,7 @@
 import * as React from "react";
 import { HashRouter, Route, Switch } from "react-router-dom";
 
+import { AppBreadcrumb } from "./AppBreadcrumb";
 import { CategoryPage } from "./CategoryPage";
 import { Home } from "./Home";
 import { Category, Menu, Page } from "./Menu";
@@ -10,22 +11,27 @@ export function AppRoutes({ menu }: { menu: Menu }): JSX.Element {
     <HashRouter hashType="noslash">
       <Switch>
         {menu.categories.map((category: Category) => (
-          <Route
-            key={category.route}
-            path={`/${category.route}`}
-            render={() => <CategoryPage category={category}/>}
-            exact={true}
-          />
-        ))}
-        {menu.categories.map((category: Category) => (
-          category.pages.map((page: Page) => (
+          <>
             <Route
-              key={`${category.route}/${page.route}`}
-              path={`/${category.route}/${page.route}`}
-              render={() => page.component}
+              key={category.route}
+              path={`/${category.route}`}
+              render={() => <CategoryPage category={category}/>}
               exact={true}
             />
-          ))
+            {category.pages.map((page: Page) => (
+              <Route
+                key={`${category.route}/${page.route}`}
+                path={`/${category.route}/${page.route}`}
+                render={() => (
+                  <>
+                    <AppBreadcrumb menu={menu} category={category} page={page} />
+                    {page.component}
+                  </>
+                )}
+                exact={true}
+              />
+            ))}
+          </>
         ))}
         <Route
           key={menu.route}
