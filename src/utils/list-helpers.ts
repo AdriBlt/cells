@@ -119,3 +119,7 @@ export function findMaxElement<T>(list: T[], getValue: (element: T) => number): 
     });
     return maxElement;
 }
+
+export function isDefined<T>(item: T | null | undefined): item is T {
+    return item !== null && item !== undefined;
+}

@@ -59,5 +59,5 @@ export const GameModes = {
   ELEMENTARY_RULES: new AutomatonInterfaceSize(61, 51, 200, 15, true),
   LANGTONS_ANT: new AutomatonInterfaceSize(61, 51, 100, 15, true),
   TURMITE: new AutomatonInterfaceSize(51, 22, 100, 25, true),
-  PREDATOR_PREY: new AutomatonInterfaceSize(101, 51, 100, 15, true),
+  PREDATOR_PREY: new AutomatonInterfaceSize(61, 51, 500, 15, true),
 };

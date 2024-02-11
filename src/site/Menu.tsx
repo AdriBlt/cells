@@ -3,6 +3,7 @@ import * as React from "react";
 import { AntGame } from "../cellular-automaton/ant-game";
 import { ElementaryRulesGame } from "../cellular-automaton/elementary-rules-game";
 import { GameOfLifeGame } from "../cellular-automaton/game-of-life-game";
+import { PredatorPreyGame } from "../cellular-automaton/predator-prey-game";
 import { TurmiteGame } from "../cellular-automaton/turmite-game";
 import { BransleyFernGame, SierpinskiChaosGame } from "../fractals/bransley-chaos-game";
 import { BurningShipFractalGame } from "../fractals/burning-ship-fractal-game";
@@ -77,6 +78,11 @@ const cellularAutomatonPages: Page[] = [
     name: strings.menu.turmite,
     route: "turmite",
     component: <TurmiteGame />,
+  },
+  {
+    name: strings.menu.predatorPrey,
+    route: "predator-prey",
+    component: <PredatorPreyGame />,
   },
 ];
 const gamesPages: Page[] = [

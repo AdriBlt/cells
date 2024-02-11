@@ -23,6 +23,7 @@ const strings = {
     elementaryRules: "Elementary Rules",
     langtonAnt: "Langton's Ant",
     turmite: "Turmite",
+    predatorPrey: "Predator Pray",
     stars: "Night Sky Stars",
     wolfenstein: "Wolfenstein",
     alixMaze: "Alix's Maze",
@@ -111,6 +112,13 @@ const strings = {
     ruleSelector: "Rule",
     threeStateLabel: "3 states Turmite",
     threeStateTooltip: "Whether the turmite has 2 or 3 different states",
+  },
+  predatorPrey : {
+    mode: "Number of ",
+    borders: "Border cells",
+    hexGrid: "Hexagonal grid",
+    tips: "",
+    modeNameFormat: "{0} states"
   },
   rayCasting: {
     controls: "Arrows to move, shift to run.",
