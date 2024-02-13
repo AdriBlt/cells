@@ -50,11 +50,11 @@ export class PredatorPreyParameters extends AutomatonParameters {
   }
 
   public getRandomStatus(): PredatorPreyState {
-    return peekRandomElement(CellStatePool[this.numberOfStates]);
+    return peekRandomElement(this.predatorPrayStates);
   }
 
   public changeStatus(cell: PredatorPreyCell): void {
-    const statuses = CellStatePool[this.numberOfStates];
+    const statuses = this.predatorPrayStates;
     const index = statuses.indexOf(cell.getCurrentStatus());
     const status = index >= 0
       ? statuses[(index + 1) % statuses.length]
@@ -68,5 +68,9 @@ export class PredatorPreyParameters extends AutomatonParameters {
     return neighbourPredators.length === 0
       ? cellState
       : peekRandomElement(neighbourPredators);
+  }
+
+  public get predatorPrayStates(): PredatorPreyState[] {
+    return CellStatePool[this.numberOfStates];
   }
 }
