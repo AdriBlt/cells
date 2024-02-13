@@ -23,7 +23,7 @@ export class PredatorPreyMatrix extends AutomatonMatrix<
     for (let x = 0; x < this.xSize; x++) {
       this.matrix[x] = [];
       for (let y = 0; y < this.ySize; y++) {
-        this.matrix[x][y] = new PredatorPreyCell(x, y, PredatorPreyState.FOX);
+        this.matrix[x][y] = new PredatorPreyCell(x, y, this.getInitialState(x, y));
       }
     }
   }
@@ -68,6 +68,15 @@ export class PredatorPreyMatrix extends AutomatonMatrix<
     }
 
     this.setNextStatus();
+  }
+
+  private getInitialState(x: number, y: number): PredatorPreyState {
+    const states = this.getRules().predatorPrayStates;
+    const xFromMiddle = x - this.xSize / 2;
+    const yFromMiddle = y - this.ySize / 2;
+    const theta = Math.atan2(yFromMiddle, xFromMiddle);
+    const index = Math.floor(states.length * (0.5 + theta / (2 * Math.PI)));
+    return states[index];
   }
 
   private setNextStatus(): void {
