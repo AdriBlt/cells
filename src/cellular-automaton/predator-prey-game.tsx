@@ -1,14 +1,15 @@
 import * as React from "react";
 
 import { CheckboxInput, CheckboxInputProps } from "../shared/checkbox-input";
+import { GraphLine } from "../shared/graph/graph-line";
 import { SelectInput, SelectInputProps } from "../shared/select-input";
 import { formatString } from "../utils/string-formating-utilities";
 import { GameModes } from "./AutomatonInterfaceSize";
 import { CellularAutomatonGame } from "./cellular-automaton-game";
 import { CellularAutomatonSketch } from "./cellular-automaton-sketch";
 import { BorderCells } from "./models/BorderCells";
-import { PredatorPreyMatrix } from "./models/predator-pray/PredatorPreyMatrix";
-import { PredatorPreyMode, PredatorPreyModeList, PredatorPreyParameters } from "./models/predator-pray/PredatorPreyParameters";
+import { PredatorPreyMatrix } from "./models/predator-prey/PredatorPreyMatrix";
+import { PredatorPreyMode, PredatorPreyModeList, PredatorPreyParameters } from "./models/predator-prey/PredatorPreyParameters";
 
 interface PredatorPreyState {
   mode: PredatorPreyMode;
@@ -21,9 +22,9 @@ export class PredatorPreyGame extends CellularAutomatonGame<
   PredatorPreyState
 > {
   public state: PredatorPreyState = this.getState(new PredatorPreyParameters());
-
+  protected matrix = new PredatorPreyMatrix();
   protected sketch = new CellularAutomatonSketch<PredatorPreyMatrix>(
-    new PredatorPreyMatrix(),
+    this.matrix,
     GameModes.PREDATOR_PREY
   );
 
@@ -45,8 +46,14 @@ export class PredatorPreyGame extends CellularAutomatonGame<
     );
   }
 
+  // todo: rules + graph
   protected renderInfoSection(): JSX.Element {
-    return <span>{this.strings.predatorPrey.tips}</span>;
+    return (
+      <div>
+        <span>{this.strings.predatorPrey.tips}</span>
+        <GraphLine height={150} width={300} {...this.matrix.getGraphLinesProps()} />
+      </div>
+    );
   }
 
   private getModesProps(): SelectInputProps<PredatorPreyMode> {

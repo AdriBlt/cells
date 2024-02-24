@@ -46,15 +46,19 @@ export class PredatorPreyParameters extends AutomatonParameters {
   }
 
   public getType(cell: AutomatonCell): AutomatonType {
-    return new PredatorPreyType((cell as PredatorPreyCell).getCurrentStatus());
+    return this.getStateType((cell as PredatorPreyCell).getCurrentStatus());
+  }
+
+  public getStateType(state: PredatorPreyState): AutomatonType {
+    return new PredatorPreyType(state);
   }
 
   public getRandomStatus(): PredatorPreyState {
-    return peekRandomElement(this.predatorPrayStates);
+    return peekRandomElement(this.predatorPreyStates);
   }
 
   public changeStatus(cell: PredatorPreyCell): void {
-    const statuses = this.predatorPrayStates;
+    const statuses = this.predatorPreyStates;
     const index = statuses.indexOf(cell.getCurrentStatus());
     const status = index >= 0
       ? statuses[(index + 1) % statuses.length]
@@ -70,7 +74,11 @@ export class PredatorPreyParameters extends AutomatonParameters {
       : peekRandomElement(neighbourPredators);
   }
 
-  public get predatorPrayStates(): PredatorPreyState[] {
+  public get predatorPreyStates(): PredatorPreyState[] {
     return CellStatePool[this.numberOfStates];
+  }
+
+  public getStatePredators(pray: PredatorPreyState): PredatorPreyState[] {
+    return Predators[pray].filter((p) => this.predatorPreyStates.includes(p));
   }
 }
