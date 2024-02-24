@@ -17,7 +17,7 @@ export class PredatorPreyType implements AutomatonType {
         case PredatorPreyState.FOX:
           return COLORS.Orange;
         case PredatorPreyState.HEN:
-          return COLORS.White;
+          return COLORS.Yellow;
         case PredatorPreyState.SNAKE:
           return COLORS.Green;
         case PredatorPreyState.EAGLE:
