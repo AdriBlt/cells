@@ -156,4 +156,32 @@ export class LinkedList<T> {
   public clone(elementCopyFn: (element: T, index: number) => T = (element: T) => element): LinkedList<T> {
     return this.map(elementCopyFn);
   }
+
+  /**
+   * Insert the element before the first node for which the callback is true.
+   * Insert at the end if all false.
+   * @param element Element to insert.
+   * @param insertionCallback To insert if true.
+   */
+  public insertBeforeElement(value: T, insertionCallback: (node: T) => boolean) {
+    let node = this.head;
+    while (node !== undefined) {
+        const t = node.value;
+        if (insertionCallback(t)) {
+          const newNode = makeNode(value);
+          if (node.previous) {
+            node.previous.next = newNode;
+            newNode.previous = node.previous;
+          }
+          node.previous = newNode;
+          newNode.next = node;
+          this.count++;
+          return;
+        }
+
+        node = node.next;
+    }
+
+    this.insertTail(value);
+  }
 }

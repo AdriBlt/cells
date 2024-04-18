@@ -5,6 +5,7 @@ import { ElementaryRulesGame } from "../cellular-automaton/elementary-rules-game
 import { GameOfLifeGame } from "../cellular-automaton/game-of-life-game";
 import { PredatorPreyGame } from "../cellular-automaton/predator-prey-game";
 import { TurmiteGame } from "../cellular-automaton/turmite-game";
+import { ApollonianGasketGame } from "../fractals/apollonian-gasket-game";
 import { BransleyFernGame, SierpinskiChaosGame } from "../fractals/bransley-chaos-game";
 import { BurningShipFractalGame } from "../fractals/burning-ship-fractal-game";
 import { JuliaSetFractalGame } from "../fractals/julia-set-fractal-game";
@@ -155,6 +156,11 @@ const fractalesPages: Page[] = [
     name: 'Sand piles',
     route: 'sandpile',
     component: <SandpileGame />
+  },
+  {
+    name: 'Apollonian gasket',
+    route: 'apollonian-gasket',
+    component: <ApollonianGasketGame />
   }
   // TODO: MANDELBROT PATH
   // TODO: BUDDAHBROT
