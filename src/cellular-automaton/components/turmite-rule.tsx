@@ -1,10 +1,5 @@
 import * as p5 from "p5";
 import * as React from "react";
-import {
-  drawArrow,
-  drawSquare,
-  drawTextOnSquare,
-} from "src/utils/shape-drawer-helpers";
 
 import {
   ProcessingService,
@@ -12,6 +7,11 @@ import {
 } from "../../services/processing.service";
 import { COLORS, setFillColor, setStrokeColor } from "../../utils/color";
 import { getCellCoordinate } from "../../utils/mouse";
+import {
+  drawArrow,
+  drawSquare,
+  drawTextOnSquare,
+} from "../../utils/shape-drawer-helpers";
 import { AutomatonOrientation, getAngle } from "../models/AutomatonOrientation";
 import { getTurmiteColor } from "../models/turmite/Turmite";
 import {
