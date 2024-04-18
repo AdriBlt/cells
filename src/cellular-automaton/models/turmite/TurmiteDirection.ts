@@ -1,5 +1,4 @@
-import { randomInt } from "src/utils/random";
-
+import { randomInt } from "../../../utils/random";
 import { AutomatonOrientation } from "../AutomatonOrientation";
 
 export enum TurmiteDirection {
