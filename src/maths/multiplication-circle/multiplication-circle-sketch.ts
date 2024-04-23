@@ -1,9 +1,24 @@
-import { observable } from "mobx";
 import * as p5 from "p5";
 
 import { PlayableSketch } from "../../services/playable-sketch";
 import { getKeyFromCode, KeyBoard } from "../../utils/keyboard";
 import { createVector, Vector } from "../../utils/vector";
+
+export interface CircleProps {
+  numberOfPoints: number;
+  multiplicator: number;
+  multiplicatorIncrement: number;
+}
+
+export const DefaultProps = {
+  numberOfPoints: 250,
+  multiplicator: 0,
+  multiplicatorIncrement: 0.005,
+};
+
+interface SketchProps {
+  onPropsChange: (props: CircleProps) => void;
+}
 
 const WIDTH = 800;
 const HEIGHT = 800;
@@ -12,9 +27,13 @@ const DOT_PADDING = 5;
 const TEXT_MARGIN = 100;
 
 export class MultiplicationCircleSketch extends PlayableSketch {
-  @observable public numberOfPoints: number = 250;
-  @observable public multiplicator: number = 0;
-  @observable public multiplicatorIncrement: number = 0.005;
+  private numberOfPoints: number = DefaultProps.numberOfPoints;
+  private multiplicator: number = DefaultProps.multiplicator;
+  private multiplicatorIncrement: number = DefaultProps.multiplicatorIncrement;
+
+  constructor(private ui: SketchProps) {
+    super();
+  }
 
   public setup(p: p5): void {
     this.p5js = p;
@@ -24,6 +43,7 @@ export class MultiplicationCircleSketch extends PlayableSketch {
   public draw(): void {
     this.drawCircle();
     this.multiplicator += this.multiplicatorIncrement;
+    this.updateSketchProps();
   }
 
   public previousInt = (): void => {
@@ -36,6 +56,13 @@ export class MultiplicationCircleSketch extends PlayableSketch {
 
   public setMultiplicatorValue = (value: number): void => {
     this.multiplicator = value;
+    this.updateSketchProps();
+    this.drawCircle();
+  };
+
+  public setMultiplicatorIncrement = (value: number): void => {
+    this.multiplicatorIncrement = value;
+    this.updateSketchProps();
     this.drawCircle();
   };
 
@@ -57,6 +84,14 @@ export class MultiplicationCircleSketch extends PlayableSketch {
       // SPACE
       this.pause();
     }
+  }
+
+  private updateSketchProps() {
+    this.ui.onPropsChange({
+      multiplicator: this.multiplicator,
+      multiplicatorIncrement: this.multiplicatorIncrement,
+      numberOfPoints: this.numberOfPoints,
+    });
   }
 
   private drawCircle(): void {
