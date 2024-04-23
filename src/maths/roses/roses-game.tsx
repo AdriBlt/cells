@@ -1,16 +1,17 @@
-import { observer } from "mobx-react";
 import * as React from "react";
 
 import { InfoBox } from "../../shared/info-box";
 import { NumberInput, NumberInputProps } from "../../shared/number-input";
 import { ProcessingComponent } from "../../shared/processing-component";
 import { getStrings, LocalizedStrings } from "../../strings";
-import { RosesSketch } from "./roses-sketch";
+import { DefaultProps, RosesProps, RosesSketch } from "./roses-sketch";
 
-@observer
-export class RosesGame extends React.Component {
+export class RosesGame extends React.Component<{}, RosesProps> {
+  public state = DefaultProps;
   private strings: LocalizedStrings = getStrings();
-  private sketch = new RosesSketch();
+  private sketch = new RosesSketch({
+    onPropsChange: (p) => this.setState(p)
+  });
 
   public render() {
     return (
@@ -49,7 +50,7 @@ export class RosesGame extends React.Component {
       min: 1,
       step: 1,
       label: this.strings.roses.numerator,
-      value: this.sketch.coefNumerator,
+      value: this.state.coefNumerator,
       onValueChanged: this.sketch.setNumerator,
     };
   };
@@ -59,7 +60,7 @@ export class RosesGame extends React.Component {
       min: 1,
       step: 1,
       label: this.strings.roses.denominator,
-      value: this.sketch.coefDenominator,
+      value: this.state.coefDenominator,
       onValueChanged: this.sketch.setDenominator,
     };
   };
