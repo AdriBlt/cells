@@ -1,6 +1,6 @@
 export enum SignalType {
-  SQUARE,
-  SAWTOOTH,
-  TRIANGLE,
-  RANDOM,
+  SQUARE= 'SQUARE',
+  SAWTOOTH= 'SAWTOOTH',
+  TRIANGLE= 'TRIANGLE',
+  RANDOM= 'RANDOM',
 }

@@ -1,4 +1,3 @@
-import { observable } from "mobx";
 import * as p5 from "p5";
 
 import { ProcessingSketch } from "../../services/processing.service";
@@ -9,6 +8,20 @@ import { FourierParameter } from "../fourier/FourierParameter";
 import { getSignal, Signal } from "../fourier/Signal";
 import { SignalType } from "../fourier/SignalType";
 import { WavePoint } from "../fourier/WavePoint";
+
+export interface FourierSignalProps {
+  numberOfCircles: number;
+  signal: Signal;
+}
+
+export const DefaultProps = {
+  numberOfCircles: 20,
+  signal: getSignal(SignalType.SQUARE),
+};
+
+interface SketchProps {
+  onPropsChange: (props: FourierSignalProps) => void;
+}
 
 const WIDTH = 800;
 const HEIGHT = 600;
@@ -22,12 +35,15 @@ const TIME_INCREMENT = 0.02;
 export const MAX_FREQUENCY_COUNT = 100;
 
 export class FourierSignalSketch implements ProcessingSketch {
-  @observable public numberOfCircles: number = 20;
-  @observable public signal: Signal = getSignal(SignalType.SQUARE);
+  private numberOfCircles: number = DefaultProps.numberOfCircles;
+  private signal: Signal = DefaultProps.signal;
   private p5js: p5;
   private time: number = 0;
   private shape: LinkedList<WavePoint> = new LinkedList<WavePoint>();
   private frequencies: FourierParameter[] = [];
+
+  constructor(private ui: SketchProps) {
+  }
 
   public setup(p: p5): void {
     this.p5js = p;
@@ -49,12 +65,14 @@ export class FourierSignalSketch implements ProcessingSketch {
 
   public changeFrequencyCount = (nbCircles: number) => {
     this.numberOfCircles = Math.min(nbCircles, MAX_FREQUENCY_COUNT);
+    this.updateSketchProps();
   };
 
   public changeSignalType = (type: SignalType) => {
     this.signal = getSignal(type);
     this.shape.clear();
     this.computeFrequencies();
+    this.updateSketchProps();
   };
 
   public reset = (): void => {
@@ -64,6 +82,13 @@ export class FourierSignalSketch implements ProcessingSketch {
       this.signal = getSignal(SignalType.RANDOM);
     }
   };
+
+  private updateSketchProps() {
+    this.ui.onPropsChange({
+      numberOfCircles: this.numberOfCircles,
+      signal: this.signal,
+    });
+  }
 
   private computeFrequencies(): void {
     this.frequencies = [];
