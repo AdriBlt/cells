@@ -1,4 +1,3 @@
-import { observable } from "mobx";
 import * as p5 from "p5";
 
 import { ProcessingSketch } from "../../services/processing.service";
@@ -14,41 +13,48 @@ import {
 } from "./models/level-difficulty";
 import { MinesweeperInterface } from "./models/minesweeper-interface";
 
+export interface MinesweeperProps {
+  gameStatus: GameStatus;
+  selectedDifficulty: LevelDifficulty;
+  nbCols: number;
+  nbRows: number;
+  nbMines: number;
+  remainingMines: number;
+  isAutoResolve: boolean;
+}
+
+interface SketchProps {
+  onPropsChange: (props: MinesweeperProps) => void;
+}
+
 // Variables
 const LEFT_MARGIN = 0;
 const TOP_MARGIN = 10;
 const SQUARE_SIDE = 30;
 
-export class MinesweeperSketch
-  implements ProcessingSketch, MinesweeperInterface {
-  // Elements
-  @observable public gameStatus: GameStatus = GameStatus.Initial;
-  @observable public selectedDifficulty: LevelDifficulty =
-    LevelDifficultyConst.Expert;
-  @observable public nbCols: number = this.selectedDifficulty.numberCols;
-  @observable public nbRows: number = this.selectedDifficulty.numberRows;
-  @observable public nbMines: number = this.selectedDifficulty.numberMines;
-  @observable public remainingMines: number = this.nbMines;
-  @observable public isAutoResolve: boolean = true;
-
+export class MinesweeperSketch implements ProcessingSketch, MinesweeperInterface {
+  private gameProps: MinesweeperProps = DefaultProps;
   private engine: Engine;
   private p5js: p5;
 
-  constructor() {
+  constructor(private ui: SketchProps) {
     this.engine = new Engine(this);
   }
 
   public setAutoResolve = (value: boolean): void => {
     this.engine.isAutoResolve = value;
-    this.isAutoResolve = value;
+    this.setProps({ isAutoResolve: value });
   };
 
   public changeDifficulty(level: LevelDifficulty): void {
     if (level.numberMines > 0) {
-      this.nbCols = level.numberCols;
-      this.nbRows = level.numberRows;
-      this.nbMines = level.numberMines;
+      this.setProps({
+        nbCols: level.numberCols,
+        nbRows: level.numberRows,
+        nbMines: level.numberMines,
+      });
     }
+    this.findDifficulty();
   }
 
   public setup(p: p5): void {
@@ -63,6 +69,14 @@ export class MinesweeperSketch
 
   public draw(): void {
     // NO LOOP
+  }
+
+  public setProps(props: Partial<MinesweeperProps>) {
+    this.gameProps = {
+      ...this.gameProps,
+      ...props,
+    };
+    this.ui.onPropsChange(this.gameProps);
   }
 
   public mousePressed(): void {
@@ -94,7 +108,7 @@ export class MinesweeperSketch
   }
 
   public drawMinesCount(): void {
-    this.remainingMines = this.engine.minesCount;
+    this.setProps({ remainingMines: this.engine.minesCount });
   }
 
   public drawCell(cell: Cell): void {
@@ -171,7 +185,7 @@ export class MinesweeperSketch
   }
 
   public setGameStatus(status: GameStatus): void {
-    this.gameStatus = status;
+    this.setProps({ gameStatus: status });
   }
 
   public resetGrid(): void {
@@ -193,19 +207,19 @@ export class MinesweeperSketch
     // Draw bord
 
     this.engine.resetEngine(
-      this.nbRows,
-      this.nbCols,
-      this.nbMines,
-      this.isAutoResolve
+      this.gameProps.nbRows,
+      this.gameProps.nbCols,
+      this.gameProps.nbMines,
+      this.gameProps.isAutoResolve
     );
 
     this.p5js.stroke(0);
     this.p5js.strokeWeight(1);
     this.p5js.fill(180);
 
-    for (let i = 0; i < this.nbRows; i++) {
+    for (let i = 0; i < this.gameProps.nbRows; i++) {
       const y = TOP_MARGIN + i * SQUARE_SIDE;
-      for (let j = 0; j < this.nbCols; j++) {
+      for (let j = 0; j < this.gameProps.nbCols; j++) {
         const x = LEFT_MARGIN + j * SQUARE_SIDE;
         this.p5js.rect(x, y, SQUARE_SIDE, SQUARE_SIDE);
       }
@@ -219,16 +233,16 @@ export class MinesweeperSketch
   public findDifficulty(): void {
     for (const difficulty of LevelDifficultyConst.values) {
       if (
-        difficulty.numberCols === this.nbCols &&
-        difficulty.numberRows === this.nbRows &&
-        difficulty.numberMines === this.nbMines
+        difficulty.numberCols === this.gameProps.nbCols &&
+        difficulty.numberRows === this.gameProps.nbRows &&
+        difficulty.numberMines === this.gameProps.nbMines
       ) {
-        this.selectedDifficulty = difficulty;
+        this.setProps({ selectedDifficulty: difficulty });
         return;
       }
     }
 
-    this.selectedDifficulty = LevelDifficultyConst.Custom;
+    this.setProps({ selectedDifficulty: LevelDifficultyConst.Custom });
   }
 
   private drawBorder(): void {
@@ -244,3 +258,13 @@ export class MinesweeperSketch
     );
   }
 }
+
+export const DefaultProps = {
+  gameStatus: GameStatus.Initial,
+  selectedDifficulty: LevelDifficultyConst.Expert,
+  nbCols: LevelDifficultyConst.Expert.numberCols,
+  nbRows: LevelDifficultyConst.Expert.numberRows,
+  nbMines: LevelDifficultyConst.Expert.numberMines,
+  remainingMines: LevelDifficultyConst.Expert.numberMines,
+  isAutoResolve: true,
+};
