@@ -1,4 +1,3 @@
-import { observable } from "mobx";
 import * as p5 from "p5";
 
 import { PlayableSketch } from "../../services/playable-sketch";
@@ -6,6 +5,10 @@ import { COLORS, setBackground, setFillColor, setStrokeColor } from "../../utils
 import { getKeyFromCode, KeyBoard } from "../../utils/keyboard";
 import { drawSquare } from "../../utils/shape-drawer-helpers";
 import { getEuclidianRythm } from "./euclidian-rythms-helper";
+
+interface SketchProps {
+  onPropsChange: (timesteps: number) => void;
+}
 
 const WIDTH = 600;
 const HEIGHT = 600;
@@ -16,7 +19,11 @@ const CELL_COLOR = COLORS.DarkBlue;
 export const MIN_TIMESTEPS = 2;
 
 export class EuclidianRythmsSketch extends PlayableSketch {
-  @observable public timesteps: number = MIN_TIMESTEPS;
+  private timesteps: number = MIN_TIMESTEPS;
+
+  constructor(private ui: SketchProps) {
+    super();
+  }
 
   public setup(p: p5): void {
     this.p5js = p;
@@ -25,12 +32,12 @@ export class EuclidianRythmsSketch extends PlayableSketch {
   }
 
   public draw = (): void => {
-    this.timesteps++;
-    this.show();
+    this.setTimesteps(this.timesteps + 1);
   }
 
   public setTimesteps = (value: number): void => {
     this.timesteps = Math.max(MIN_TIMESTEPS, value);
+    this.ui.onPropsChange(this.timesteps);
     this.show();
   };
 
