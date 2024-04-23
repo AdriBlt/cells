@@ -1,4 +1,3 @@
-import { observable } from "mobx";
 import * as p5 from "p5";
 
 import { ProcessingSketch } from "../../services/processing.service";
@@ -22,6 +21,14 @@ import {
 import { DisplayOptions } from "./models/display-options";
 import { loadStarsList, Star } from "./models/stars";
 
+export interface StarsProps {
+  selectedConstellation: string;
+}
+
+interface SketchProps {
+  onSelectedConstellation: (p: StarsProps) => void;
+}
+
 const WIDTH = 1300;
 const HEIGHT = 800;
 const HALF_WIDTH = WIDTH / 2;
@@ -31,8 +38,7 @@ const DELTA_ANGLE = Math.PI / 10;
 // const DELTA_MOVEMENT = 10;
 
 export class StarsSketch implements ProcessingSketch {
-  public displayOptions: DisplayOptions;
-  @observable public selectedConstellation: string;
+  private displayOptions: DisplayOptions;
   private p5js: p5;
   private camera: ViewPoint;
   private stars: Star[];
@@ -46,7 +52,7 @@ export class StarsSketch implements ProcessingSketch {
   private constellationsFamilies: Constellation[][];
   private constellationIndex: number;
 
-  constructor() {
+  constructor(private ui: SketchProps) {
     this.camera = getDefaultCamera();
     this.projector = new ProjectionToPlan(HALF_WIDTH, HALF_HEIGHT);
     this.stars = [];
@@ -65,6 +71,7 @@ export class StarsSketch implements ProcessingSketch {
       if (this.p5js) {
         this.computeLayers();
         this.draw();
+        this.updateSelectedConstellations();
       }
     });
   }
@@ -106,13 +113,11 @@ export class StarsSketch implements ProcessingSketch {
     const nbFamilies = this.constellationsFamilies.length;
     if (key === KeyBoard.P) {
       this.constellationIndex = (this.constellationIndex + 1) % nbFamilies;
-      this.selectedConstellation =
-        KnownConstellationsFamilies[this.constellationIndex];
+      this.updateSelectedConstellations();
     } else if (key === KeyBoard.M) {
       this.constellationIndex =
         (this.constellationIndex + nbFamilies - 1) % nbFamilies;
-      this.selectedConstellation =
-        KnownConstellationsFamilies[this.constellationIndex];
+      this.updateSelectedConstellations();
     } else {
       needsToComputeConstellations = false;
     }
@@ -164,6 +169,12 @@ export class StarsSketch implements ProcessingSketch {
     if (this.displayOptions.showConstellationNames) {
       this.p5js.image(this.constellationNamesLayer, 0, 0);
     }
+  }
+
+  private updateSelectedConstellations() {
+    this.ui.onSelectedConstellation({
+      selectedConstellation: KnownConstellationsFamilies[this.constellationIndex]
+    });
   }
 
   private computeLayers(): void {
