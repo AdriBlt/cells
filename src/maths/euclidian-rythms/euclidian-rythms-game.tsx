@@ -1,4 +1,3 @@
-import { observer } from "mobx-react";
 import * as React from "react";
 
 import { ControlBarInput } from "../../shared/control-bar-input";
@@ -8,10 +7,12 @@ import { ProcessingComponent } from "../../shared/processing-component";
 import { getStrings, LocalizedStrings } from "../../strings";
 import { EuclidianRythmsSketch, MIN_TIMESTEPS } from "./euclidian-rythms-sketch";
 
-@observer
-export class EuclidianRythmsGame extends React.Component {
+export class EuclidianRythmsGame extends React.Component<{}, { timesteps: number }> {
+  public state = { timesteps: 0 };
   private strings: LocalizedStrings = getStrings();
-  private sketch = new EuclidianRythmsSketch();
+  private sketch = new EuclidianRythmsSketch({
+    onPropsChange: (timesteps) => this.setState({ timesteps })
+  });
 
   public render() {
     return (
@@ -52,7 +53,7 @@ export class EuclidianRythmsGame extends React.Component {
       min: MIN_TIMESTEPS,
       step: 1,
       label: this.strings.euclidianRythms.timesteps,
-      value: this.sketch.timesteps,
+      value: this.state.timesteps,
       onValueChanged: this.sketch.setTimesteps,
     };
   };
