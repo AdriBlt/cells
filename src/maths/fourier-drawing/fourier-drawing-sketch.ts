@@ -1,4 +1,3 @@
-import { computed, observable } from "mobx";
 import * as p5 from "p5";
 
 import { Complex } from "../../numbers/Complex";
@@ -13,6 +12,16 @@ import { FourierParameter } from "../fourier/FourierParameter";
 import { getFourierParameter } from "../fourier/FourierTransform";
 import { GeoCoordinates } from "./data";
 
+export interface FourierDrawingsProps {
+  numberOfCircles: number;
+  showOriginal: boolean;
+  maxNumberOfFrequencies: number;
+}
+
+interface SketchProps {
+  onPropsChange: (props: FourierDrawingsProps) => void;
+}
+
 const WIDTH = 800;
 const HEIGHT = 600;
 const MARGIN = 10;
@@ -20,17 +29,21 @@ const CENTER: Vector = createVector(WIDTH / 2, HEIGHT / 2);
 
 const COORDINATES: Point[][] = GeoCoordinates;
 export class FourierDrawingSketch extends PlayableSketch {
-  @observable public numberOfCircles: number;
-  @observable public showOriginal: boolean = false;
-  @computed public get maxNumberOfFrequencies() { return this.points.length; }
+  private numberOfCircles: number;
+  private showOriginal: boolean = false;
+  private get maxNumberOfFrequencies() { return this.points.length; }
 
   private time: number = 0;
   private shape: LinkedList<Point> = new LinkedList<Point>();
   private frequencies: FourierParameter[] = [];
-  @observable private points: Complex[] = [];
+  private points: Complex[] = [];
   private timeIncrement: number = 0;
   private currentlySelectedIndex = 0;
   private speed = 1;
+
+  constructor(private ui: SketchProps) {
+    super();
+  }
 
   public setup(p: p5): void {
     this.p5js = p;
@@ -56,6 +69,7 @@ export class FourierDrawingSketch extends PlayableSketch {
     if (this.isPaused) {
       this.drawElements();
     }
+    this.updateSketchData();
   }
 
   public setNumberOfCircles(value: number): void {
@@ -63,6 +77,7 @@ export class FourierDrawingSketch extends PlayableSketch {
     if (this.isPaused) {
       this.drawElements();
     }
+    this.updateSketchData();
   }
 
   public keyPressed(): void {
@@ -108,6 +123,14 @@ export class FourierDrawingSketch extends PlayableSketch {
     });
   }
 
+  private updateSketchData() {
+    this.ui.onPropsChange({
+      maxNumberOfFrequencies: this.maxNumberOfFrequencies,
+      numberOfCircles: this.numberOfCircles,
+      showOriginal: this.showOriginal,
+    })
+  }
+
   private resetPoints = (): void => {
     this.setPoints(COORDINATES[this.currentlySelectedIndex]);
   }
@@ -119,6 +142,7 @@ export class FourierDrawingSketch extends PlayableSketch {
     this.timeIncrement = this.speed * 2 * Math.PI / this.maxNumberOfFrequencies;
     this.computeFrequencies();
     this.restart();
+    this.updateSketchData();
   }
 
   private runOneStep = (): void => {

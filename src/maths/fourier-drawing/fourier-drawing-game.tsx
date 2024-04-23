@@ -1,4 +1,3 @@
-import { observer } from "mobx-react";
 import * as React from "react";
 
 import { CheckboxInput, CheckboxInputProps } from "../../shared/checkbox-input";
@@ -6,13 +5,19 @@ import { ControlBarInput } from "../../shared/control-bar-input";
 import { NumberInput, NumberInputProps } from "../../shared/number-input";
 import { ProcessingComponent } from "../../shared/processing-component";
 import { getStrings, LocalizedStrings } from "../../strings";
-import { FourierDrawingSketch } from "./fourier-drawing-sketch";
+import { FourierDrawingSketch, FourierDrawingsProps } from "./fourier-drawing-sketch";
 
-@observer
-export class FourierDrawingGame extends React.Component
+export class FourierDrawingGame extends React.Component<{}, FourierDrawingsProps>
 {
+  public state = {
+    numberOfCircles: 0,
+    showOriginal: false,
+    maxNumberOfFrequencies: 0,
+  };
   private strings: LocalizedStrings = getStrings();
-  private sketch = new FourierDrawingSketch();
+  private sketch = new FourierDrawingSketch({
+    onPropsChange: (p) => this.setState(p)
+} );
 
   public render() {
       return (
@@ -43,9 +48,9 @@ export class FourierDrawingGame extends React.Component
   private getNumberOfCirclesProps = (): NumberInputProps => {
     return {
       min: 1,
-      max: this.sketch.maxNumberOfFrequencies,
+      max: this.state.maxNumberOfFrequencies,
       label: this.strings.fourierDrawing.numberOfCircles,
-      value: this.sketch.numberOfCircles,
+      value: this.state.numberOfCircles,
       onValueChanged: (value: number) => this.sketch.setNumberOfCircles(value),
     };
   };
@@ -53,7 +58,7 @@ export class FourierDrawingGame extends React.Component
   private showOriginalProps(): CheckboxInputProps {
     return {
       label: this.strings.fourierDrawing.showOriginal,
-      value: this.sketch.showOriginal,
+      value: this.state.showOriginal,
       onValueChanged: (value: boolean) => this.sketch.setShowOriginal(value),
     }
   }
