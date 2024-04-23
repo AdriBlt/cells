@@ -1,4 +1,3 @@
-import { observer } from "mobx-react";
 import * as React from "react";
 import { Button } from "react-bootstrap";
 
@@ -8,15 +7,17 @@ import { ProcessingComponent } from "../../shared/processing-component";
 import { SelectInput, SelectInputProps } from "../../shared/select-input";
 import { getStrings, LocalizedStrings } from "../../strings";
 import { pluralizeString } from "../../utils/string-formating-utilities";
-import { MinesweeperSketch } from "./minesweeper-sketch";
+import { DefaultProps, MinesweeperProps, MinesweeperSketch } from "./minesweeper-sketch";
 import { GameStatus } from "./models/game-status";
 import { LevelDifficulty, LevelDifficultyConst } from "./models/level-difficulty";
 
-@observer
-export class MinesweeperGame extends React.Component
+export class MinesweeperGame extends React.Component<{}, MinesweeperProps>
 {
+  public state = DefaultProps;
   private strings: LocalizedStrings = getStrings();
-  private sketch = new MinesweeperSketch();
+  private sketch = new MinesweeperSketch({
+    onPropsChange: (p) => this.setState(p)
+  });
 
   public render() {
       return (
@@ -37,7 +38,7 @@ export class MinesweeperGame extends React.Component
         <NumberInput {...this.getMinesProps()} />
         <CheckboxInput
           label={this.strings.minesweeper.autoResolve}
-          value={this.sketch.isAutoResolve}
+          value={this.state.isAutoResolve}
           onValueChanged={(v) => this.sketch.setAutoResolve(v)}
         />
         <Button onClick={() => this.sketch.resetGrid()} block={true}>
@@ -49,22 +50,22 @@ export class MinesweeperGame extends React.Component
 
   protected renderInfoSection(): JSX.Element {
     const endTextMessage =
-      this.sketch.gameStatus === GameStatus.Victory
+      this.state.gameStatus === GameStatus.Victory
         ? this.strings.shared.victory
-        : this.sketch.gameStatus === GameStatus.Failure
+        : this.state.gameStatus === GameStatus.Failure
         ? this.strings.shared.failure
         : "";
     return (
       <div>
         <p
           style={{
-            color: this.sketch.remainingMines < 0 ? "red" : "black",
+            color: this.state.remainingMines < 0 ? "red" : "black",
           }}
         >
           <i>
             {pluralizeString(
               this.strings.minesweeper.remainingMines_plural,
-              this.sketch.remainingMines
+              this.state.remainingMines
             )}
           </i>
         </p>
@@ -79,7 +80,7 @@ export class MinesweeperGame extends React.Component
     return {
       label: this.strings.minesweeper.difficulty,
       options: LevelDifficultyConst.values,
-      selectedOption: this.sketch.selectedDifficulty,
+      selectedOption: this.state.selectedDifficulty,
       onOptionChanged: difficulty => this.sketch.changeDifficulty(difficulty),
       getName: difficulty => difficulty.name,
     };
@@ -90,9 +91,9 @@ export class MinesweeperGame extends React.Component
       min: LevelDifficultyConst.minSide,
       max: LevelDifficultyConst.maxSide,
       label: this.strings.minesweeper.width,
-      value: this.sketch.nbCols,
+      value: this.state.nbCols,
       onValueChanged: (value) => {
-        this.sketch.nbCols = value;
+        this.sketch.setProps({ nbCols: value });
         this.updateMinesAndDifficultyIfNeeded();
       },
     };
@@ -103,9 +104,9 @@ export class MinesweeperGame extends React.Component
       min: LevelDifficultyConst.minSide,
       max: LevelDifficultyConst.maxSide,
       label: this.strings.minesweeper.height,
-      value: this.sketch.nbRows,
+      value: this.state.nbRows,
       onValueChanged: (value) => {
-        this.sketch.nbRows = value;
+        this.sketch.setProps({ nbRows: value });
         this.updateMinesAndDifficultyIfNeeded();
       },
     };
@@ -116,18 +117,18 @@ export class MinesweeperGame extends React.Component
       min: LevelDifficultyConst.minMines,
       max: LevelDifficultyConst.maxMines,
       label: this.strings.minesweeper.mines,
-      value: this.sketch.nbMines,
+      value: this.state.nbMines,
       onValueChanged: (value) => {
-        this.sketch.nbMines = value;
+        this.sketch.setProps({ nbMines: value });
         this.updateMinesAndDifficultyIfNeeded();
       },
     };
   }
 
   private updateMinesAndDifficultyIfNeeded = (): void => {
-    const maxMines = this.sketch.nbCols * this.sketch.nbRows - 1;
-    if (this.sketch.nbMines > maxMines) {
-      this.sketch.nbMines = maxMines;
+    const maxMines = this.state.nbCols * this.state.nbRows - 1;
+    if (this.state.nbMines > maxMines) {
+      this.sketch.setProps({ nbMines: maxMines });
     }
 
     this.sketch.findDifficulty();
