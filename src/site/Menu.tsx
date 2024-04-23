@@ -25,6 +25,7 @@ import { FourierSignalGame } from "../maths/fourier-signal/fourier-signal-game";
 import { MultiplicationCircleGame } from "../maths/multiplication-circle/multiplication-circle-game";
 import { PercolationGame } from "../maths/percolation/percolation-game";
 import { RosesGame } from "../maths/roses/roses-game";
+import { SpirographGame } from "../maths/spirograph/spirograph-game";
 import { VoronoiGame } from "../maths/voronoi/voronoi-game";
 import { MazeGenerationGame } from "../mazes/maze-generation/maze-generation-game";
 import { AlixMazeGame } from "../mazes/ray-casting/alix-maze-game";
@@ -205,6 +206,11 @@ const mathsPages: Page[] = [
     name: strings.menu.euclidianRythms,
     route: 'euclidian-rythms',
     component: <EuclidianRythmsGame />,
+  },
+  {
+    name: "Spirograph",
+    route: 'spirograph',
+    component: <SpirographGame />,
   },
   {
     name: "Percolation",
