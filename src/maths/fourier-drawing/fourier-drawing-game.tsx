@@ -17,7 +17,7 @@ export class FourierDrawingGame extends React.Component<{}, FourierDrawingsProps
   private strings: LocalizedStrings = getStrings();
   private sketch = new FourierDrawingSketch({
     onPropsChange: (p) => this.setState(p)
-} );
+  });
 
   public render() {
       return (
