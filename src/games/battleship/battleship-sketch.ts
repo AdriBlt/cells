@@ -1,4 +1,3 @@
-import { observable } from "mobx";
 import * as p5 from "p5";
 
 import { ProcessingSketch } from "../../services/processing.service";
@@ -26,6 +25,10 @@ enum ShipVisibility {
   NONE,
 }
 
+interface Props {
+  onGameStatusChange: (status: GameStatus) => void;
+}
+
 /**
  * TODO
  * Better code for colors
@@ -36,11 +39,10 @@ enum ShipVisibility {
 export class BattleshipSketch implements ProcessingSketch, BattleshipInterface {
   // Elements
 
-  @observable public gameStatus: GameStatus = GameStatus.Initial;
   private engine: Engine;
   private p5js: p5;
 
-  constructor() {
+  constructor(private ui: Props) {
     this.engine = new Engine(this);
   }
 
@@ -56,7 +58,7 @@ export class BattleshipSketch implements ProcessingSketch, BattleshipInterface {
   };
 
   public resetGrid = (): void => {
-    this.gameStatus = GameStatus.Initial;
+    this.setGameStatus(GameStatus.Initial);
     this.engine.resetEngine();
     this.engine.startGame();
 
@@ -68,7 +70,7 @@ export class BattleshipSketch implements ProcessingSketch, BattleshipInterface {
   };
 
   public setGameStatus = (status: GameStatus): void => {
-    this.gameStatus = status;
+    this.ui.onGameStatusChange(status);
     if (status === GameStatus.Failure) {
       this.drawAllShips(
         this.engine.opponentBoard,
