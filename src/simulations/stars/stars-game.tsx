@@ -1,12 +1,13 @@
-import { Observer } from "mobx-react";
 import * as React from "react";
 
 import { ProcessingComponent } from "../../shared/processing-component";
-import { StarsSketch } from "./stars-sketch";
+import { StarsProps, StarsSketch } from "./stars-sketch";
 
-export class StarsGame extends React.Component
-{
-  private sketch = new StarsSketch();
+export class StarsGame extends React.Component<{}, StarsProps> {
+  public state = { selectedConstellation: "" };
+  private sketch = new StarsSketch({
+    onSelectedConstellation: (p) => this.setState(p)
+  });
 
   public render() {
     return (
@@ -18,10 +19,6 @@ export class StarsGame extends React.Component
   }
 
   protected renderInfoSection(): JSX.Element {
-    return (
-      <Observer>
-        {() => <div>{this.sketch.selectedConstellation}</div>}
-      </Observer>
-    );
+    return <span>{this.state.selectedConstellation}</span>;
   }
 }
