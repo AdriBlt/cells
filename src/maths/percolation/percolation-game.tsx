@@ -1,4 +1,3 @@
-import { observer } from "mobx-react";
 import * as React from "react";
 import { Link } from "react-router-dom";
 
@@ -6,7 +5,6 @@ import { InfoBox } from "../../shared/info-box";
 import { ProcessingComponent } from "../../shared/processing-component";
 import { PercolationSketch } from "./percolation-sketch";
 
-@observer
 export class PercolationGame extends React.Component {
   // private strings: LocalizedStrings = getStrings();
   private sketch = new PercolationSketch();

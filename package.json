@@ -4,8 +4,6 @@
   "private": true,
   "homepage": "https://adriblt.github.io/cells",
   "dependencies": {
-    "mobx": "5.14.2",
-    "mobx-react": "6.1.4",
     "p5": "^0.10.2",
     "react": "^16.9.0",
     "react-bootstrap": "^1.0.0-beta.5",
