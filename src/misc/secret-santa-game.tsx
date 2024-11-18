@@ -1,135 +1,133 @@
 import * as React from "react";
 
-import { shuffleList } from "../utils/list-helpers";
+import { SantaBinaryEngine } from "./santa-binary-engine";
+import { SantaEngine } from "./santa-engine";
+import { GiftAssignmentResult, Santa } from "./santa/santa-model";
 
-interface Guest {
-  name: string;
-  cannotGiftTo: string[];
-}
-
-interface GiftAssignment {
-  from: string;
-  to: string;
-}
-
-interface SecretSantaState {
-  giftAssignment: GiftAssignment[];
-}
-
-export class SecretSantaGame extends React.Component<{}, SecretSantaState>
+const divider = "*************************************";
+export class SecretSantaGame extends React.Component<{}, { giftAssignment: GiftAssignmentResult[][] }>
 {
-  public state = { giftAssignment: [] as GiftAssignment[] };
-  private guests: Guest[] = [];
+  public state = { giftAssignment: [] as GiftAssignmentResult[][] };
+  private engines: Santa[] = [
+    getVerratEngine(),
+    getOlivierParentEngine(),
+    getOlivierParentEnfantEngine(),
+    getOlivierEnfantEngine()
+  ];
 
   public componentDidMount() {
-    // ALL GUESTS
-    this.addCouple('Jeanne', 'Maxime');
-    this.addCouple('Anne', 'Alex');
-    this.addCouple('Claire', 'Cédric');
-    this.addCouple('Thérèse', 'Vincent');
-    this.addCouple('Jean-Emmanuel', 'Emilie');
-    this.addCouple('Bernie', 'Léo');
-    this.addCouple('Agnès', 'Adrien');
-    this.addCouple('Elisabeth', 'Alban');
-
-    // INCOMPATIBILITIES
-    this.addIncompatibility('Agnès', 'Thérèse');
-    this.addIncompatibility('Adrien', 'Thérèse');
-    this.addIncompatibility('Agnès', 'Vincent');
-    this.addIncompatibility('Adrien', 'Vincent');
-    this.addIncompatibility('Agnès', 'Bernie');
-    this.addIncompatibility('Adrien', 'Bernie');
-    this.addIncompatibility('Agnès', 'Léo');
-    this.addIncompatibility('Adrien', 'Léo');
-    this.addIncompatibility('Agnès', 'Anne');
-    this.addIncompatibility('Adrien', 'Anne');
-    this.addIncompatibility('Agnès', 'Alex');
-    this.addIncompatibility('Adrien', 'Alex');
-
-    this.addIncompatibility('Elisabeth', 'Thérèse', true);
-    this.addIncompatibility('Elisabeth', 'Vincent', true);
-    this.addIncompatibility('Alban', 'Thérèse', true);
-    this.addIncompatibility('Alban', 'Vincent', true);
-
-    this.addIncompatibility('Emilie', 'Thérèse');
-
     // COMPUTE
-    this.computeGifts();
+    const assignments = this.engines.map(e => {
+      e.computeGifts();
+      return e.getAssignments();
+    });
+    this.setState({ giftAssignment: assignments });
   }
 
   public render = () => {
-    const { giftAssignment } = this.state;
-
-    if (giftAssignment.length === 0) {
-      return null;
-    }
 
     return (
       <div>
-        <ul>
-          {giftAssignment.map(a => (<li>{`${a.from} offre un cadeau à ${a.to}`}</li>))}
-        </ul>
+        <div>{divider}</div>
+        {this.state.giftAssignment.map((giftAssignment, i) => (
+          <>
+            <ul key={i}>
+              {giftAssignment.map(a => (<li>{`${a.from} offre un cadeau à ${a.to}`}</li>))}
+            </ul>
+            <div>{divider}</div>
+          </>
+        ))}
       </div>
     );
   }
+}
 
-  private addCouple = (name1: string, name2: string): void => {
-    this.guests.push({
-      name: name1,
-      cannotGiftTo: [ name2 ],
-    });
-    this.guests.push({
-      name: name2,
-      cannotGiftTo: [ name1 ],
-    });
-  }
+function getVerratEngine() {
+  const engine = new SantaEngine();
 
-  private addIncompatibility = (name1: string, name2: string, twoSides = false): void => {
-    const guest1 = this.getGuest(name1);
-    const guest2 = this.getGuest(name2);
-    guest1.cannotGiftTo.push(name2);
-    if (twoSides) {
-      guest2.cannotGiftTo.push(name1);
-    }
-  }
+  // ALL GUESTS
+  engine.addCouple('Jeanne', 'Maxime');
+  engine.addCouple('Anne', 'Alex');
+  engine.addCouple('Claire', 'Cédric');
+  engine.addCouple('Thérèse', 'Vincent');
+  engine.addCouple('Jean-Emmanuel', 'Emilie');
+  engine.addCouple('Bernie', 'Léo');
+  engine.addCouple('Agnès', 'Adrien');
+  engine.addCouple('Elisabeth', 'Alban');
 
-  private computeGifts = (): void => {
-    const guestNames = this.guests.map(g => g.name);
-    let giftAssignment: GiftAssignment[];
-    do {
-      shuffleList(guestNames);
-      giftAssignment = this.getAssignment(guestNames);
-    } while (!this.isValidAssignment(giftAssignment));
-    this.setState({ giftAssignment });
-  }
+  // INCOMPATIBILITIES
+  engine.addIncompatibility('Agnès', 'Thérèse');
+  engine.addIncompatibility('Adrien', 'Thérèse');
+  engine.addIncompatibility('Agnès', 'Vincent');
+  engine.addIncompatibility('Adrien', 'Vincent');
+  engine.addIncompatibility('Agnès', 'Bernie');
+  engine.addIncompatibility('Adrien', 'Bernie');
+  engine.addIncompatibility('Agnès', 'Léo');
+  engine.addIncompatibility('Adrien', 'Léo');
+  engine.addIncompatibility('Agnès', 'Anne');
+  engine.addIncompatibility('Adrien', 'Anne');
+  engine.addIncompatibility('Agnès', 'Alex');
+  engine.addIncompatibility('Adrien', 'Alex');
 
-  private getAssignment = (guestNames: string[]): GiftAssignment[] => {
-    const assignment: GiftAssignment[] = [];
-    let lastName = guestNames[guestNames.length - 1];
-    for (let i = 0; i < guestNames.length; i++) {
-      const name = guestNames[i];
-      assignment.push({ from: lastName, to: name });
-      lastName = name;
-    }
-    return assignment;
-  }
+  engine.addIncompatibility('Elisabeth', 'Thérèse', true);
+  engine.addIncompatibility('Elisabeth', 'Vincent', true);
+  engine.addIncompatibility('Alban', 'Thérèse', true);
+  engine.addIncompatibility('Alban', 'Vincent', true);
 
-  private isValidAssignment = (giftAssignment: GiftAssignment[]): boolean => {
-    for (let i = 0; i < giftAssignment.length; i++) {
-      const guest = this.getGuest(giftAssignment[i].from);
-      if (guest.cannotGiftTo.includes(giftAssignment[i].to)) {
-        return false;
-      }
-    }
-    return true;
-  }
+  engine.addIncompatibility('Emilie', 'Thérèse');
 
-  private getGuest = (name: string): Guest => {
-    const guest = this.guests.find(g => g.name === name);
-    if (!guest) {
-      throw new Error(`Cannot find name ${guest}`);
-    }
+  return engine;
+}
 
-    return guest;
-  }
+function getOlivierParentEngine() {
+  const engine = new SantaEngine();
+
+  // ALL GUESTS
+  engine.addCouple('Gilles', 'Véro');
+  engine.addCouple('Bertrand', 'Aurélie');
+  engine.addPerson('Caro');
+  engine.addPerson('Sophie');
+
+  return engine;
+}
+
+function getOlivierParentEnfantEngine() {
+  const engine = new SantaBinaryEngine();
+
+  // GIVER
+  engine.addGiver('Gilles', ['Adri&Agnès', 'Alix&Julien']);
+  engine.addGiver('Véro', ['Adri&Agnès', 'Alix&Julien']);
+  engine.addGiver('Sophie');
+  engine.addGiver('Bertrand', ['Benoit&Savannah', 'Clement&Léna', 'Margot']);
+  engine.addGiver('Aurélie', ['Benoit&Savannah', 'Clement&Léna', 'Margot']);
+  engine.addGiver('Caro', ['Bilal']);
+
+  // RECEIVER
+  ['Adri&Agnès', 'Alix&Julien', 'Benoit&Savannah', 'Clement&Léna', 'Margot', 'Bilal'].forEach(r => engine.addReceiver(r))
+
+  return engine;
+}
+
+function getOlivierEnfantEngine() {
+  const engine = new SantaEngine();
+
+  // ALL GUESTS
+  engine.addCouple('Adri', 'Agnès');
+  engine.addCouple('Alix', 'Julien');
+  engine.addCouple('Benoit', 'Savannah');
+  engine.addPerson('Clément');
+  engine.addPerson('Margot');
+  engine.addPerson('Bilal');
+
+  engine.addIncompatibility('Adri', 'Alix', true);
+  engine.addIncompatibility('Agnès', 'Alix', true);
+  engine.addIncompatibility('Adri', 'Julien', true);
+  engine.addIncompatibility('Agnès', 'Julien', true);
+  engine.addIncompatibility('Benoit', 'Clément', true);
+  engine.addIncompatibility('Benoit', 'Margot', true);
+  engine.addIncompatibility('Savannah', 'Clément', true);
+  engine.addIncompatibility('Savannah', 'Margot', true);
+  engine.addIncompatibility('Clément', 'Margot', true);
+
+  return engine;
 }
