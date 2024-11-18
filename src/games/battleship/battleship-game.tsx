@@ -1,4 +1,3 @@
-import { observer } from "mobx-react";
 import * as React from "react";
 import { Button } from "react-bootstrap";
 
@@ -7,10 +6,13 @@ import { getStrings, LocalizedStrings } from "../../strings";
 import { BattleshipSketch } from "./battleship-sketch";
 import { GameStatus } from "./models/game-status";
 
-@observer
-export class BattleshipGame extends React.Component {
+type State = { endTextMessage: string };
+export class BattleshipGame extends React.Component<{}, State> {
+  public state = { endTextMessage: '' };
   private strings: LocalizedStrings = getStrings();
-  private sketch = new BattleshipSketch();
+  private sketch = new BattleshipSketch({
+    onGameStatusChange: (status) => this.setGameStatus(status)
+  });
 
   public render() {
     return (
@@ -31,18 +33,22 @@ export class BattleshipGame extends React.Component {
   }
 
   protected renderInfoSection(): JSX.Element {
-    const endTextMessage =
-      this.sketch.gameStatus === GameStatus.Victory
-        ? this.strings.shared.victory
-        : this.sketch.gameStatus === GameStatus.Failure
-          ? this.strings.shared.failure
-          : "";
     return (
       <div>
         <span>
-          <b>{endTextMessage}</b>
+          <b>{this.state.endTextMessage}</b>
         </span>
       </div>
     );
+  }
+
+  private setGameStatus(gameStatus: GameStatus) {
+    const endTextMessage =
+    gameStatus === GameStatus.Victory
+      ? this.strings.shared.victory
+      : gameStatus === GameStatus.Failure
+        ? this.strings.shared.failure
+        : "";
+    this.setState({ endTextMessage });
   }
 }
