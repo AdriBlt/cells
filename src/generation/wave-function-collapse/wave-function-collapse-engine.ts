@@ -33,8 +33,14 @@ export class WaveFunctionCollapseEngine {
     private nbCols: number
   ) {}
 
-  public resetGrid = (props: WaveFunctionCollapseProps): void => {
+  public resetGrid = (
+    props: WaveFunctionCollapseProps,
+    nbRows: number,
+    nbCols: number
+  ): void => {
     this.props = props;
+    this.nbRows = nbRows;
+    this.nbCols = nbCols;
     this.generationState = GenerationState.NotStarted;
     const nbTiles = this.props.tiles.length;
     this.cells = createDefaultFlatMatrix<Cell>(this.nbRows, this.nbCols, (i, j) => ({

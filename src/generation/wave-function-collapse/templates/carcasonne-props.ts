@@ -1,0 +1,127 @@
+import { TileSetBuilder, WaveFunctionCollapseProps } from "../wave-function-collapse-models";
+
+export function getCarcasonneTilesProps(): WaveFunctionCollapseProps {
+  const tileSet = TileSetBuilder();
+
+  // GRASS / ROAD / TOWN
+  tileSet.addTile('carcasonne/CastleCenter0', ['T', 'T', 'T', 'T']);
+  tileSet.addTile('carcasonne/CastleCenterEntry0', ['T', 'T', 'R', 'T']);
+  tileSet.addTile('carcasonne/CastleCenterEntry1', ['T', 'T', 'T', 'R']);
+  tileSet.addTile('carcasonne/CastleCenterEntry2', ['R', 'T', 'T', 'T']);
+  tileSet.addTile('carcasonne/CastleCenterEntry3', ['T', 'R', 'T', 'T']);
+  tileSet.addTile('carcasonne/CastleCenterSide0', ['T', 'T', 'G', 'T']);
+  tileSet.addTile('carcasonne/CastleCenterSide1', ['T', 'T', 'T', 'G']);
+  tileSet.addTile('carcasonne/CastleCenterSide2', ['G', 'T', 'T', 'T']);
+  tileSet.addTile('carcasonne/CastleCenterSide3', ['T', 'G', 'T', 'T']);
+  tileSet.addTile('carcasonne/CastleCenterSides0', ['G', 'G', 'T', 'G']);
+  tileSet.addTile('carcasonne/CastleCenterSides1', ['G', 'G', 'G', 'T']);
+  tileSet.addTile('carcasonne/CastleCenterSides2', ['T', 'G', 'G', 'G']);
+  tileSet.addTile('carcasonne/CastleCenterSides3', ['G', 'T', 'G', 'G']);
+  tileSet.addTile('carcasonne/CastleEdge0', ['T', 'T', 'G', 'G']);
+  tileSet.addTile('carcasonne/CastleEdge1', ['G', 'T', 'T', 'G']);
+  tileSet.addTile('carcasonne/CastleEdge2', ['G', 'G', 'T', 'T']);
+  tileSet.addTile('carcasonne/CastleEdge3', ['T', 'G', 'G', 'T']);
+  tileSet.addTile('carcasonne/CastleEdgeRoad0', ['T', 'T', 'R', 'R']);
+  tileSet.addTile('carcasonne/CastleEdgeRoad1', ['R', 'T', 'T', 'R']);
+  tileSet.addTile('carcasonne/CastleEdgeRoad2', ['R', 'R', 'T', 'T']);
+  tileSet.addTile('carcasonne/CastleEdgeRoad3', ['T', 'R', 'R', 'T']);
+  tileSet.addTile('carcasonne/CastleMini0', ['G', 'G', 'R', 'G']);
+  tileSet.addTile('carcasonne/CastleMini1', ['G', 'G', 'G', 'R']);
+  tileSet.addTile('carcasonne/CastleMini2', ['R', 'G', 'G', 'G']);
+  tileSet.addTile('carcasonne/CastleMini3', ['G', 'R', 'G', 'G']);
+  tileSet.addTile('carcasonne/CastleSides0', ['T', 'G', 'T', 'G']);
+  tileSet.addTile('carcasonne/CastleSides1', ['G', 'T', 'G', 'T']);
+  tileSet.addTile('carcasonne/CastleSidesEdge0', ['T', 'G', 'G', 'T']);
+  tileSet.addTile('carcasonne/CastleSidesEdge1', ['T', 'T', 'G', 'G']);
+  tileSet.addTile('carcasonne/CastleSidesEdge2', ['G', 'T', 'T', 'G']);
+  tileSet.addTile('carcasonne/CastleSidesEdge3', ['G', 'G', 'T', 'T']);
+  tileSet.addTile('carcasonne/CastleSidesEdgeRoad0', ['T', 'R', 'R', 'T']);
+  tileSet.addTile('carcasonne/CastleSidesEdgeRoad1', ['T', 'T', 'R', 'R']);
+  tileSet.addTile('carcasonne/CastleSidesEdgeRoad2', ['R', 'T', 'T', 'R']);
+  tileSet.addTile('carcasonne/CastleSidesEdgeRoad3', ['R', 'R', 'T', 'T']);
+  tileSet.addTile('carcasonne/CastleSidesQuad0', ['T', 'T', 'T', 'T']);
+  tileSet.addTile('carcasonne/CastleSidesRoad0', ['T', 'R', 'T', 'R']);
+  tileSet.addTile('carcasonne/CastleSidesRoad1', ['R', 'T', 'R', 'T']);
+  tileSet.addTile('carcasonne/CastleTube0', ['G', 'T', 'G', 'T']);
+  tileSet.addTile('carcasonne/CastleTube1', ['T', 'G', 'T', 'G']);
+  tileSet.addTile('carcasonne/CastleTube2', ['G', 'T', 'G', 'T']);
+  tileSet.addTile('carcasonne/CastleTube3', ['T', 'G', 'T', 'G']);
+  tileSet.addTile('carcasonne/CastleTubeEntries0', ['R', 'T', 'R', 'T']);
+  tileSet.addTile('carcasonne/CastleTubeEntries1', ['T', 'R', 'T', 'R']);
+  tileSet.addTile('carcasonne/CastleTubeEntry0', ['G', 'T', 'R', 'T']);
+  tileSet.addTile('carcasonne/CastleTubeEntry1', ['T', 'G', 'T', 'R']);
+  tileSet.addTile('carcasonne/CastleTubeEntry2', ['R', 'T', 'G', 'T']);
+  tileSet.addTile('carcasonne/CastleTubeEntry3', ['T', 'R', 'T', 'G']);
+  tileSet.addTile('carcasonne/CastleWall0', ['T', 'G', 'G', 'G']);
+  tileSet.addTile('carcasonne/CastleWall1', ['G', 'T', 'G', 'G']);
+  tileSet.addTile('carcasonne/CastleWall2', ['G', 'G', 'T', 'G']);
+  tileSet.addTile('carcasonne/CastleWall3', ['G', 'G', 'G', 'T']);
+  tileSet.addTile('carcasonne/CastleWallCurveLeft0', ['T', 'G', 'R', 'R']);
+  tileSet.addTile('carcasonne/CastleWallCurveLeft1', ['R', 'T', 'G', 'R']);
+  tileSet.addTile('carcasonne/CastleWallCurveLeft2', ['R', 'R', 'T', 'G']);
+  tileSet.addTile('carcasonne/CastleWallCurveLeft3', ['G', 'R', 'R', 'T']);
+  tileSet.addTile('carcasonne/CastleWallCurveRight0', ['T', 'R', 'R', 'G']);
+  tileSet.addTile('carcasonne/CastleWallCurveRight1', ['G', 'T', 'R', 'R']);
+  tileSet.addTile('carcasonne/CastleWallCurveRight2', ['R', 'G', 'T', 'R']);
+  tileSet.addTile('carcasonne/CastleWallCurveRight3', ['R', 'R', 'G', 'T']);
+  tileSet.addTile('carcasonne/CastleWallEntry0', ['T', 'G', 'R', 'G']);
+  tileSet.addTile('carcasonne/CastleWallEntry1', ['G', 'T', 'G', 'R']);
+  tileSet.addTile('carcasonne/CastleWallEntry2', ['R', 'G', 'T', 'G']);
+  tileSet.addTile('carcasonne/CastleWallEntry3', ['G', 'R', 'G', 'T']);
+  tileSet.addTile('carcasonne/CastleWallEntryLeft0', ['T', 'G', 'G', 'R']);
+  tileSet.addTile('carcasonne/CastleWallEntryLeft1', ['R', 'T', 'G', 'G']);
+  tileSet.addTile('carcasonne/CastleWallEntryLeft2', ['G', 'R', 'T', 'G']);
+  tileSet.addTile('carcasonne/CastleWallEntryLeft3', ['G', 'G', 'R', 'T']);
+  tileSet.addTile('carcasonne/CastleWallEntryRight0', ['T', 'R', 'G', 'G']);
+  tileSet.addTile('carcasonne/CastleWallEntryRight1', ['G', 'T', 'R', 'G']);
+  tileSet.addTile('carcasonne/CastleWallEntryRight2', ['G', 'G', 'T', 'R']);
+  tileSet.addTile('carcasonne/CastleWallEntryRight3', ['R', 'G', 'G', 'T']);
+  tileSet.addTile('carcasonne/CastleWallJunction0', ['T', 'R', 'R', 'R']);
+  tileSet.addTile('carcasonne/CastleWallJunction1', ['R', 'T', 'R', 'R']);
+  tileSet.addTile('carcasonne/CastleWallJunction2', ['R', 'R', 'T', 'R']);
+  tileSet.addTile('carcasonne/CastleWallJunction3', ['R', 'R', 'R', 'T']);
+  tileSet.addTile('carcasonne/CastleWallRoad0', ['T', 'R', 'G', 'R']);
+  tileSet.addTile('carcasonne/CastleWallRoad1', ['R', 'T', 'R', 'G']);
+  tileSet.addTile('carcasonne/CastleWallRoad2', ['G', 'R', 'T', 'R']);
+  tileSet.addTile('carcasonne/CastleWallRoad3', ['R', 'G', 'R', 'T']);
+  tileSet.addTile('carcasonne/Monastery0', ['G', 'G', 'G', 'G']);
+  tileSet.addTile('carcasonne/Monastery1', ['G', 'G', 'G', 'G']);
+  tileSet.addTile('carcasonne/MonasteryCastle0', ['T', 'T', 'T', 'T']);
+  tileSet.addTile('carcasonne/MonasteryCastle1', ['T', 'T', 'T', 'T']);
+  tileSet.addTile('carcasonne/MonasteryCastle2', ['T', 'T', 'T', 'T']);
+  tileSet.addTile('carcasonne/MonasteryCastle3', ['T', 'T', 'T', 'T']);
+  tileSet.addTile('carcasonne/MonasteryJunction0', ['R', 'R', 'R', 'R']);
+  tileSet.addTile('carcasonne/MonasteryRoad0', ['G', 'G', 'R', 'G']);
+  tileSet.addTile('carcasonne/MonasteryRoad1', ['G', 'G', 'G', 'R']);
+  tileSet.addTile('carcasonne/MonasteryRoad2', ['R', 'G', 'G', 'G']);
+  tileSet.addTile('carcasonne/MonasteryRoad3', ['G', 'R', 'G', 'G']);
+  tileSet.addTile('carcasonne/Road0', ['R', 'G', 'R', 'G']);
+  tileSet.addTile('carcasonne/Road1', ['G', 'R', 'G', 'R']);
+  tileSet.addTile('carcasonne/Road2', ['R', 'G', 'R', 'G']);
+  tileSet.addTile('carcasonne/Road3', ['G', 'R', 'G', 'R']);
+  tileSet.addTile('carcasonne/RoadCrossLarge0', ['R', 'R', 'R', 'R']);
+  tileSet.addTile('carcasonne/RoadCrossSmall0', ['G', 'R', 'R', 'R']);
+  tileSet.addTile('carcasonne/RoadCrossSmall1', ['R', 'G', 'R', 'R']);
+  tileSet.addTile('carcasonne/RoadCrossSmall2', ['R', 'R', 'G', 'R']);
+  tileSet.addTile('carcasonne/RoadCrossSmall3', ['R', 'R', 'R', 'G']);
+  tileSet.addTile('carcasonne/RoadCurve0', ['G', 'G', 'R', 'R']);
+  tileSet.addTile('carcasonne/RoadCurve1', ['R', 'G', 'G', 'R']);
+  tileSet.addTile('carcasonne/RoadCurve2', ['R', 'R', 'G', 'G']);
+  tileSet.addTile('carcasonne/RoadCurve3', ['G', 'R', 'R', 'G']);
+  tileSet.addTile('carcasonne/RoadEnd0', ['G', 'G', 'R', 'G']);
+  tileSet.addTile('carcasonne/RoadEnd1', ['G', 'G', 'G', 'R']);
+  tileSet.addTile('carcasonne/RoadEnd2', ['R', 'G', 'G', 'G']);
+  tileSet.addTile('carcasonne/RoadEnd3', ['G', 'R', 'G', 'G']);
+  tileSet.addTile('carcasonne/RoadJunctionLarge0', ['R', 'R', 'R', 'R']);
+  tileSet.addTile('carcasonne/RoadJunctionSmall0', ['G', 'R', 'R', 'R']);
+  tileSet.addTile('carcasonne/RoadJunctionSmall1', ['R', 'G', 'R', 'R']);
+  tileSet.addTile('carcasonne/RoadJunctionSmall2', ['R', 'R', 'G', 'R']);
+  tileSet.addTile('carcasonne/RoadJunctionSmall3', ['R', 'R', 'R', 'G']);
+
+  return {
+    isHexaGrid: false,
+    areCompatibleSockets: (s1, s2) => s1 === s2,
+    tiles: tileSet.getTiles(),
+    customCellSize: 50,
+  };
+}

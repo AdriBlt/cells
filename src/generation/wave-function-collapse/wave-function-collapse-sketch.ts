@@ -4,6 +4,7 @@ import { PlayableSketch } from "../../services/playable-sketch";
 import { COLORS, setBackground, setFillColor, setStrokeColor } from "../../utils/color";
 import { drawHexagon, drawSquare, drawTextOnHexagon, drawTextOnSquare } from "../../utils/shape-drawer-helpers";
 import { getBasicTilesProps } from "./templates/basic-props";
+import { getCarcasonneTilesProps } from "./templates/carcasonne-props";
 import { getCastleTilesProps } from "./templates/castle-props";
 import { getCirclesTilesProps } from "./templates/circles-props";
 import { getCircuitTilesProps } from "./templates/circuit-props";
@@ -24,22 +25,24 @@ export enum TileTemplate {
   FloorPlanTiles = 'Floor plan',
   RoomsTiles = 'Rooms',
   SummerTiles = 'Summer',
+  Carcasonne = 'Carcasonne',
 }
 
-export const DEFAULT_TILE_TEMPLATE = TileTemplate.SummerTiles;
+export const DEFAULT_TILE_TEMPLATE = TileTemplate.Carcasonne;
 
 const W = 900;
 const H = 500;
 const MARGIN = 10;
 const MARGIN_LEFT = MARGIN;
 const MARGIN_TOP = MARGIN;
-const CELL_SIZE = 15;
 const STROKE_WEIGHT = 1;
 const STROKE_COLOR = COLORS.Black;
 const BACKGROUND_COLOR = COLORS.White;
 
-const NB_COLS = Math.floor((W - 2 * MARGIN) / CELL_SIZE);
-const NB_ROWS = Math.floor((H - 2 * MARGIN) / CELL_SIZE);
+const DEFAULT_CELL_SIZE = 15;
+// const CELL_SIZE = 15;
+// const NB_COLS = Math.floor((W - 2 * MARGIN) / CELL_SIZE);
+// const NB_ROWS = Math.floor((H - 2 * MARGIN) / CELL_SIZE);
 
 export class WaveFunctionCollapseSketch
   extends PlayableSketch
@@ -58,7 +61,19 @@ export class WaveFunctionCollapseSketch
 
   constructor() {
     super();
-    this.engine = new WaveFunctionCollapseEngine(this, NB_ROWS, NB_COLS);
+    this.engine = new WaveFunctionCollapseEngine(this, this.nbRows, this.nbCols);
+  }
+
+  private get cellSize() {
+    return !!this.props && this.props.customCellSize ? this.props.customCellSize : DEFAULT_CELL_SIZE ;
+  }
+
+  private get nbCols() {
+    return Math.floor((W - 2 * MARGIN) / this.cellSize);
+  }
+
+  private get nbRows() {
+    return Math.floor((H - 2 * MARGIN) / this.cellSize);
   }
 
   public setTemplate(template: TileTemplate): void {
@@ -74,7 +89,7 @@ export class WaveFunctionCollapseSketch
 
   public setup(p: p5): void {
     this.p5js = p;
-    this.p5js.createCanvas(W, H + 4 * CELL_SIZE);
+    this.p5js.createCanvas(W, H + 4 * this.cellSize);
 
     this.setTemplate(DEFAULT_TILE_TEMPLATE);
   }
@@ -86,11 +101,11 @@ export class WaveFunctionCollapseSketch
     if (!this.props.isHexaGrid) {
       this.p5js.strokeWeight(STROKE_WEIGHT + 1);
       this.p5js.noFill();
-      this.p5js.rect(MARGIN_LEFT - 1, MARGIN_TOP - 1, CELL_SIZE * NB_COLS + 2, CELL_SIZE * NB_ROWS + 2);
+      this.p5js.rect(MARGIN_LEFT - 1, MARGIN_TOP - 1, this.cellSize * this.nbCols + 2, this.cellSize * this.nbRows + 2);
     }
 
     this.p5js.strokeWeight(STROKE_WEIGHT);
-    this.engine.resetGrid(this.props);
+    this.engine.resetGrid(this.props, this.nbRows, this.nbCols);
     this.p5js.strokeWeight(0);
 
     this.drawTilesLegend();
@@ -125,26 +140,26 @@ export class WaveFunctionCollapseSketch
       if (tile.image.isFlipped) {
         this.p5js.push()
         this.p5js.translate(
-          MARGIN_LEFT + j * CELL_SIZE,
-          MARGIN_TOP + i * CELL_SIZE,
+          MARGIN_LEFT + j * this.cellSize,
+          MARGIN_TOP + i * this.cellSize,
         );
         this.p5js.scale(-1, 1);
         this.p5js.image(
           graphics,
           0,
           0,
-          -CELL_SIZE,
-          CELL_SIZE,
+          -this.cellSize,
+          this.cellSize,
         );
         this.p5js.pop();
       }
       else {
         this.p5js.image(
           graphics,
-          MARGIN_LEFT + j * CELL_SIZE,
-          MARGIN_TOP + i * CELL_SIZE,
-          CELL_SIZE,
-          CELL_SIZE
+          MARGIN_LEFT + j * this.cellSize,
+          MARGIN_TOP + i * this.cellSize,
+          this.cellSize,
+          this.cellSize
           );
         }
     } else if (tile && tile.color) {
@@ -153,17 +168,17 @@ export class WaveFunctionCollapseSketch
       this.p5js.strokeWeight(STROKE_WEIGHT);
 
       if (this.props.isHexaGrid) {
-        drawHexagon(this.p5js, j, i, CELL_SIZE, MARGIN_LEFT, MARGIN_TOP);
+        drawHexagon(this.p5js, j, i, this.cellSize, MARGIN_LEFT, MARGIN_TOP);
       } else {
-        drawSquare(this.p5js, j, i, CELL_SIZE, MARGIN_LEFT, MARGIN_TOP);
+        drawSquare(this.p5js, j, i, this.cellSize, MARGIN_LEFT, MARGIN_TOP);
       }
     } else if (this.debug) {
       setFillColor(this.p5js, BACKGROUND_COLOR);
 
       if (this.props.isHexaGrid) {
-        drawHexagon(this.p5js, j, i, CELL_SIZE, MARGIN_LEFT, MARGIN_TOP);
+        drawHexagon(this.p5js, j, i, this.cellSize, MARGIN_LEFT, MARGIN_TOP);
       } else {
-        drawSquare(this.p5js, j, i, CELL_SIZE, MARGIN_LEFT, MARGIN_TOP);
+        drawSquare(this.p5js, j, i, this.cellSize, MARGIN_LEFT, MARGIN_TOP);
       }
 
       setFillColor(this.p5js, COLORS.Black);
@@ -175,20 +190,20 @@ export class WaveFunctionCollapseSketch
       }
 
       if (this.props.isHexaGrid) {
-        drawTextOnHexagon(this.p5js, j, i, cell.possibleTiles.length + '', CELL_SIZE, MARGIN_LEFT, MARGIN_TOP);
+        drawTextOnHexagon(this.p5js, j, i, cell.possibleTiles.length + '', this.cellSize, MARGIN_LEFT, MARGIN_TOP);
       } else {
-        drawTextOnSquare(this.p5js, j, i, cell.possibleTiles.length + '', CELL_SIZE, MARGIN_LEFT, MARGIN_TOP);
+        drawTextOnSquare(this.p5js, j, i, cell.possibleTiles.length + '', this.cellSize, MARGIN_LEFT, MARGIN_TOP);
       }
     }
   }
   private drawTilesLegend() {
     const coef = 1.1;
-    const nbOnLine = Math.floor(NB_COLS / coef);
+    const nbOnLine = Math.floor(this.nbCols / coef);
     for (let t = 0; t < Math.min(nbOnLine, this.props.tiles.length); t++) {
-      this.drawCell(NB_ROWS + 1, coef * t, this.props.tiles[t]);
+      this.drawCell(this.nbRows + 1, coef * t, this.props.tiles[t]);
     }
     for (let t = 0; t < this.props.tiles.length - nbOnLine; t++) {
-      this.drawCell(NB_ROWS + 2.1, coef * t, this.props.tiles[nbOnLine + t]);
+      this.drawCell(this.nbRows + 2.1, coef * t, this.props.tiles[nbOnLine + t]);
     }
   }
 
@@ -220,6 +235,8 @@ export class WaveFunctionCollapseSketch
         return getRoomsTilesProps();
       case TileTemplate.SummerTiles:
         return getSummerTilesProps();
+      case TileTemplate.Carcasonne:
+        return getCarcasonneTilesProps();
       default:
         const never: never = template;
         throw new Error(`Unknown tempalte: ${never}`)
