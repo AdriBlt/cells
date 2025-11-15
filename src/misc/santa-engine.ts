@@ -1,30 +1,37 @@
 import { shuffleList } from "../utils/list-helpers";
-import { GiftAssignment, Guest, Santa } from "./santa/santa-model";
+import { GiftAssignment, Guest } from "./santa/santa-model";
 
-export class SantaEngine implements Santa {
+export interface SantaOption {
+  groups: string[][];
+  imcompatibilities?: Array<[string, string, boolean?]>;
+}
+
+export class SantaEngine
+{
   private giftAssignment: GiftAssignment[] = [];
   private guests: Guest[] = [];
+
+  constructor(options: SantaOption) {
+    this.setup(options);
+    this.computeGifts();
+  }
 
   public getAssignments() {
     return this.giftAssignment.map(a => ({ from: a.from.name, to: a.to.name}));
   }
 
-  public addCouple = (name1: string, name2: string): void => {
-    this.guests.push({
-      name: name1,
-      cannotGiftTo: [ name2 ],
+  private setup(options: SantaOption) {
+    options.groups.forEach(group => {
+      group.forEach((name, index) => {
+        const cannotGiftTo = [...group];
+        cannotGiftTo.splice(index, 1);
+        this.guests.push({ name, cannotGiftTo });
+      })
     });
-    this.guests.push({
-      name: name2,
-      cannotGiftTo: [ name1 ],
-    });
+    (options.imcompatibilities || []).forEach(incompat => this.addIncompatibility(incompat[0], incompat[1], incompat[2]));
   }
 
-  public addPerson = (name: string): void => {
-    this.guests.push({ name, cannotGiftTo: [] });
-  }
-
-  public addIncompatibility = (name1: string, name2: string, twoSides = false): void => {
+  private addIncompatibility = (name1: string, name2: string, twoSides = false): void => {
     const guest1 = this.getGuest(name1);
     const guest2 = this.getGuest(name2);
     guest1.cannotGiftTo.push(name2);
@@ -33,38 +40,32 @@ export class SantaEngine implements Santa {
     }
   }
 
-  public computeGifts = (): void => {
-    const guestNames = this.guests.map(g => g);
-    let giftAssignment: GiftAssignment[];
+  private computeGifts = (): void => {
+    const receivers = this.guests.map(g => g);
+    let giftAssignment: GiftAssignment[] | null = null;
     do {
-      shuffleList(guestNames);
-      giftAssignment = this.getAssignment(guestNames);
-    } while (!this.isValidAssignment(giftAssignment));
+      shuffleList(receivers);
+      giftAssignment = this.getAssignment(receivers);
+    } while (!giftAssignment);
     this.giftAssignment = giftAssignment;
   }
 
-  public getAssignment = (guests: Guest[]): GiftAssignment[] => {
+  private getAssignment = (receivers: Guest[]): GiftAssignment[] | null => {
     const assignment: GiftAssignment[] = [];
-    let lastGuest = guests[guests.length - 1];
-    for (let i = 0; i < guests.length; i++) {
-      const name = guests[i];
-      assignment.push({ from: lastGuest, to: name });
-      lastGuest = name;
+    for (let i = 0; i < receivers.length; i++) {
+      const from = this.guests[i];
+      const to = receivers[i];
+      if (this.guests[i].cannotGiftTo.includes(to.name)) {
+        return null;
+      }
+
+      assignment.push({ from, to });
     }
+
     return assignment;
   }
 
-  public isValidAssignment = (giftAssignment: GiftAssignment[]): boolean => {
-    for (let i = 0; i < giftAssignment.length; i++) {
-      const guest = giftAssignment[i].from;
-      if (guest.cannotGiftTo.includes(giftAssignment[i].to.name)) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  public getGuest = (name: string): Guest => {
+  private getGuest = (name: string): Guest => {
     const guest = this.guests.find(g => g.name === name);
     if (!guest) {
       throw new Error(`Cannot find name ${guest}`);

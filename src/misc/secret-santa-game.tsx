@@ -2,37 +2,37 @@ import * as React from "react";
 
 import { SantaBinaryEngine } from "./santa-binary-engine";
 import { SantaEngine } from "./santa-engine";
-import { GiftAssignmentResult, Santa } from "./santa/santa-model";
+import { GiftAssignmentResult } from "./santa/santa-model";
 
 const divider = "*************************************";
-export class SecretSantaGame extends React.Component<{}, { giftAssignment: GiftAssignmentResult[][] }>
+
+interface SecretSantaState {
+  giftAssignments: GiftAssignmentResult[][];
+}
+
+export class SecretSantaGame extends React.Component<{}, SecretSantaState>
 {
-  public state = { giftAssignment: [] as GiftAssignmentResult[][] };
-  private engines: Santa[] = [
-    getVerratEngine(),
-    getOlivierParentEngine(),
-    getOlivierParentEnfantEngine(),
-    getOlivierEnfantEngine()
-  ];
+  public state: SecretSantaState = { giftAssignments: [] };
 
   public componentDidMount() {
-    // COMPUTE
-    const assignments = this.engines.map(e => {
-      e.computeGifts();
-      return e.getAssignments();
-    });
-    this.setState({ giftAssignment: assignments });
+    const giftAssignments = [
+      getVerratAdultEngine(),
+      getVerratKidsEngine(),
+      getOlivierParentEngine(),
+      getOlivierParentEnfantEngine(),
+      getOlivierEnfantEngine()
+    ];
+    this.setState({ giftAssignments });
   }
 
   public render = () => {
-
     return (
       <div>
         <div>{divider}</div>
-        {this.state.giftAssignment.map((giftAssignment, i) => (
+        {this.state.giftAssignments.map((giftAssignment, i) => (
           <>
             <ul key={i}>
-              {giftAssignment.map(a => (<li>{`${a.from} offre un cadeau à ${a.to}`}</li>))}
+              {this.renderAssignment(giftAssignment)}
             </ul>
             <div>{divider}</div>
           </>
@@ -40,94 +40,122 @@ export class SecretSantaGame extends React.Component<{}, { giftAssignment: GiftA
       </div>
     );
   }
+
+  private renderAssignment(giftAssignment: GiftAssignmentResult[]) {
+    if (giftAssignment.length === 0) {
+      return null;
+    }
+
+    return (
+      <div>
+        <ul>
+          {giftAssignment.map(a => (<li>{`${a.from} offre un cadeau à ${a.to}`}</li>))}
+        </ul>
+      </div>
+    );
+  }
 }
 
-function getVerratEngine() {
-  const engine = new SantaEngine();
+function getVerratAdultEngine() {
+  const engine = new SantaEngine({
+      groups: [
+        ['Jeanne', 'Maxime'],
+        ['Anne', 'Alex'],
+        ['Claire', 'Cédric'],
+        ['Thérèse', 'Vincent'],
+        ['Jean-Emmanuel', 'Emilie'],
+        ['Bernie', 'Léo'],
+        ['Agnès', 'Adrien'],
+        ['Elisabeth', 'Alban'],
+        ['Lucie', 'Enzo'],
+      ],
+      imcompatibilities: [
+        ['Agnès', 'Thérèse'],
+        ['Adrien', 'Thérèse'],
+        ['Agnès', 'Vincent'],
+        ['Adrien', 'Vincent'],
+        ['Agnès', 'Anne'],
+        ['Adrien', 'Anne'],
+        ['Agnès', 'Alex'],
+        ['Adrien', 'Alex'],
 
-  // ALL GUESTS
-  engine.addCouple('Jeanne', 'Maxime');
-  engine.addCouple('Anne', 'Alex');
-  engine.addCouple('Claire', 'Cédric');
-  engine.addCouple('Thérèse', 'Vincent');
-  engine.addCouple('Jean-Emmanuel', 'Emilie');
-  engine.addCouple('Bernie', 'Léo');
-  engine.addCouple('Agnès', 'Adrien');
-  engine.addCouple('Elisabeth', 'Alban');
+        ['Elisabeth', 'Thérèse', true],
+        ['Elisabeth', 'Vincent', true],
+        ['Alban', 'Thérèse', true],
+        ['Alban', 'Vincent', true],
 
-  // INCOMPATIBILITIES
-  engine.addIncompatibility('Agnès', 'Thérèse');
-  engine.addIncompatibility('Adrien', 'Thérèse');
-  engine.addIncompatibility('Agnès', 'Vincent');
-  engine.addIncompatibility('Adrien', 'Vincent');
-  engine.addIncompatibility('Agnès', 'Bernie');
-  engine.addIncompatibility('Adrien', 'Bernie');
-  engine.addIncompatibility('Agnès', 'Léo');
-  engine.addIncompatibility('Adrien', 'Léo');
-  engine.addIncompatibility('Agnès', 'Anne');
-  engine.addIncompatibility('Adrien', 'Anne');
-  engine.addIncompatibility('Agnès', 'Alex');
-  engine.addIncompatibility('Adrien', 'Alex');
+        ['Emilie', 'Thérèse'],
+        ['Cédric', 'Vincent'],
+        ['Jeanne', 'Thérèse'],
+        ['Jeanne', 'Vincent'],
+        ['Maxime', 'Thérèse'],
+        ['Maxime', 'Vincent'],
+      ]
+    });
 
-  engine.addIncompatibility('Elisabeth', 'Thérèse', true);
-  engine.addIncompatibility('Elisabeth', 'Vincent', true);
-  engine.addIncompatibility('Alban', 'Thérèse', true);
-  engine.addIncompatibility('Alban', 'Vincent', true);
+  return engine.getAssignments();
+}
 
-  engine.addIncompatibility('Emilie', 'Thérèse');
-
-  return engine;
+function getVerratKidsEngine() {
+  const engine = new SantaEngine({
+      groups: [
+        ['Clémence', 'Gabriel'],
+        ['Raphaëlle', 'Sienne', 'Victoria'],
+        ['Capucine'],
+        ['Jim'],
+        ['Baptiste', 'Tristan'],
+        ['Colette'],
+        ['Arthur', 'Sasha'],
+        ['Marin'],
+      ]
+    });
+  return engine.getAssignments();
 }
 
 function getOlivierParentEngine() {
-  const engine = new SantaEngine();
+  const engine = new SantaEngine({
+    groups: [
+      ['Gilles', 'Véro'],
+      ['Bertrand', 'Aurélie'],
+      ['Caro'],
+      ['Sophie'],
+    ]
+  });
 
-  // ALL GUESTS
-  engine.addCouple('Gilles', 'Véro');
-  engine.addCouple('Bertrand', 'Aurélie');
-  engine.addPerson('Caro');
-  engine.addPerson('Sophie');
-
-  return engine;
+  return engine.getAssignments();
 }
 
 function getOlivierParentEnfantEngine() {
-  const engine = new SantaBinaryEngine();
+  const engine = new SantaBinaryEngine({
+    givers: [
+    [ 'Gilles', ['Adri&Agnès', 'Alix&Julien']],
+    [ 'Véro', ['Adri&Agnès', 'Alix&Julien']],
+    [ 'Sophie'],
+    [ 'Bertrand', ['Benoit&Savannah', 'Clement&Léna', 'Margot']],
+    [ 'Aurélie', ['Benoit&Savannah', 'Clement&Léna', 'Margot']],
+    [ 'Caro', ['Bilal']],
+    ],
+    receivers: [
+      'Adri&Agnès',
+      'Alix&Julien',
+      'Benoit&Savannah',
+      'Clement&Léna',
+      'Margot',
+      'Bilal',
+    ]
+  });
 
-  // GIVER
-  engine.addGiver('Gilles', ['Adri&Agnès', 'Alix&Julien']);
-  engine.addGiver('Véro', ['Adri&Agnès', 'Alix&Julien']);
-  engine.addGiver('Sophie');
-  engine.addGiver('Bertrand', ['Benoit&Savannah', 'Clement&Léna', 'Margot']);
-  engine.addGiver('Aurélie', ['Benoit&Savannah', 'Clement&Léna', 'Margot']);
-  engine.addGiver('Caro', ['Bilal']);
-
-  // RECEIVER
-  ['Adri&Agnès', 'Alix&Julien', 'Benoit&Savannah', 'Clement&Léna', 'Margot', 'Bilal'].forEach(r => engine.addReceiver(r))
-
-  return engine;
+  return engine.getAssignments();
 }
 
 function getOlivierEnfantEngine() {
-  const engine = new SantaEngine();
+  const engine = new SantaEngine({
+    groups: [
+      ['Adri', 'Agnès', 'Alix', 'Julien'],
+      ['Benoit', 'Savannah', 'Clément', 'Margot'],
+      ['Bilal'],
+    ]
+  });
 
-  // ALL GUESTS
-  engine.addCouple('Adri', 'Agnès');
-  engine.addCouple('Alix', 'Julien');
-  engine.addCouple('Benoit', 'Savannah');
-  engine.addPerson('Clément');
-  engine.addPerson('Margot');
-  engine.addPerson('Bilal');
-
-  engine.addIncompatibility('Adri', 'Alix', true);
-  engine.addIncompatibility('Agnès', 'Alix', true);
-  engine.addIncompatibility('Adri', 'Julien', true);
-  engine.addIncompatibility('Agnès', 'Julien', true);
-  engine.addIncompatibility('Benoit', 'Clément', true);
-  engine.addIncompatibility('Benoit', 'Margot', true);
-  engine.addIncompatibility('Savannah', 'Clément', true);
-  engine.addIncompatibility('Savannah', 'Margot', true);
-  engine.addIncompatibility('Clément', 'Margot', true);
-
-  return engine;
+  return engine.getAssignments();
 }

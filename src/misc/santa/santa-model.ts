@@ -13,8 +13,3 @@ export interface GiftAssignmentResult {
     from: string;
     to: string;
 }
-
-export interface Santa {
-    computeGifts: () => void;
-    getAssignments: () => GiftAssignmentResult[]
-  }
