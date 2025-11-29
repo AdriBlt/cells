@@ -20,7 +20,8 @@ export class SecretSantaGame extends React.Component<{}, SecretSantaState>
       getVerratKidsEngine(),
       getOlivierParentEngine(),
       getOlivierParentEnfantEngine(),
-      getOlivierEnfantEngine()
+      getOlivierEnfantEngine(),
+      getOlivierEnfantParentEngine()
     ];
     this.setState({ giftAssignments });
   }
@@ -131,15 +132,15 @@ function getOlivierParentEnfantEngine() {
     [ 'Gilles', ['Adri&Agnès', 'Alix&Julien']],
     [ 'Véro', ['Adri&Agnès', 'Alix&Julien']],
     [ 'Sophie'],
-    [ 'Bertrand', ['Benoit&Savannah', 'Clement&Léna', 'Margot']],
-    [ 'Aurélie', ['Benoit&Savannah', 'Clement&Léna', 'Margot']],
+    [ 'Bertrand', ['Benoit&Savannah', 'Clement', 'Margot']],
+    [ 'Aurélie', ['Benoit&Savannah', 'Clement', 'Margot']],
     [ 'Caro', ['Bilal']],
     ],
     receivers: [
       'Adri&Agnès',
       'Alix&Julien',
       'Benoit&Savannah',
-      'Clement&Léna',
+      'Clement',
       'Margot',
       'Bilal',
     ]
@@ -154,6 +155,29 @@ function getOlivierEnfantEngine() {
       ['Adri', 'Agnès', 'Alix', 'Julien'],
       ['Benoit', 'Savannah', 'Clément', 'Margot'],
       ['Bilal'],
+    ]
+  });
+
+  return engine.getAssignments();
+}
+
+function getOlivierEnfantParentEngine() {
+  const engine = new SantaBinaryEngine({
+    givers: [
+    [ 'Adri&Agnès', ['Gilles', 'Véro']],
+    [ 'Alix&Julien', ['Gilles', 'Véro']],
+    [ 'Benoit&Savannah', ['Bertrand', 'Aurélie']],
+    [ 'Clement', ['Bertrand', 'Aurélie']],
+    [ 'Margot', ['Bertrand', 'Aurélie']],
+    [ 'Bilal', ['Caro']],
+    ],
+    receivers: [
+      'Gilles',
+      'Véro',
+      'Sophie',
+      'Bertrand',
+      'Aurélie',
+      'Caro',
     ]
   });
 

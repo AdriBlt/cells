@@ -55,7 +55,7 @@ export class SantaEngine
     for (let i = 0; i < receivers.length; i++) {
       const from = this.guests[i];
       const to = receivers[i];
-      if (this.guests[i].cannotGiftTo.includes(to.name)) {
+      if (from === to || from.cannotGiftTo.includes(to.name)) {
         return null;
       }
 
