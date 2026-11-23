@@ -1,5 +1,4 @@
-import { randomInt } from "src/utils/random";
-
+import { randomInt } from "../../../utils/random";
 import { AutomatonOrientation } from "../AutomatonOrientation";
 
 export enum TurmiteDirection {
@@ -9,9 +8,8 @@ export enum TurmiteDirection {
   LEFT, //    8, "L"
 }
 
-const ALL_DIRECTIONS: TurmiteDirection[] = Object.keys(TurmiteDirection)
-  .filter((k) => typeof TurmiteDirection[k] === "number")
-  .map((k) => TurmiteDirection[k]);
+const ALL_DIRECTIONS: TurmiteDirection[] = Object.values(TurmiteDirection)
+  .filter((v): v is TurmiteDirection => typeof v === "number");
 
 export function getTurmiteDirectionNumber(dir: TurmiteDirection): number {
   switch (dir) {

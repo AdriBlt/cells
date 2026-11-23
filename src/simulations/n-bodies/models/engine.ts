@@ -1,6 +1,5 @@
-import { random } from "src/utils/random";
-
 import { LinkedList } from "../../../utils/linked-list";
+import { random } from "../../../utils/random";
 import { createVector, Vector } from "../../../utils/vector";
 import { Body, BodyInfo } from "../models/models";
 

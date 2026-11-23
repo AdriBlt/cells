@@ -1,4 +1,4 @@
-import * as p5 from "p5";
+import p5 from "p5";
 
 export function random(min?: number, max?: number) {
   return p5.prototype.random(min, max);

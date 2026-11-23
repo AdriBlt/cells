@@ -124,7 +124,7 @@ export class GameOfLifeGame extends CellularAutomatonGame<
           (m) => m === selectedBorder
         );
         if (border) {
-          this.sketch.matrix.getRules().setBorders(BorderCells[border]);
+          this.sketch.matrix.getRules().setBorders(BorderCells[border as keyof typeof BorderCells]);
           this.updateState();
         }
       },

@@ -1,5 +1,5 @@
 import { observable } from "mobx";
-import * as p5 from "p5";
+import p5 from "p5";
 
 import { PlayableSketch } from "../../services/playable-sketch";
 import { COLORS, setBackground, setFillColor, setStrokeColor } from "../../utils/color";

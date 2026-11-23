@@ -1,5 +1,5 @@
 import { observable } from "mobx";
-import * as p5 from "p5";
+import p5 from "p5";
 
 import { PlayableSketch } from "../../services/playable-sketch";
 import { getKeyFromCode, KeyBoard } from "../../utils/keyboard";

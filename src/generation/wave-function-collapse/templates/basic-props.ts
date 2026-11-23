@@ -1,4 +1,4 @@
-import * as p5 from "p5";
+import p5 from "p5";
 
 import { Color, COLORS } from "../../../utils/color";
 import { createDefaultList } from "../../../utils/list-helpers";

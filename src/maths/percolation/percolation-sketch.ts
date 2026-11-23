@@ -1,4 +1,4 @@
-import * as p5 from "p5";
+import p5 from "p5";
 
 import { PlayableSketch } from "../../services/playable-sketch";
 import { Color, COLORS, setBackground, setFillColor } from "../../utils/color";
@@ -44,7 +44,7 @@ export class PercolationSketch extends PlayableSketch {
   }
 
   private show(): void {
-    const t = this.slider.value();
+    const t = this.slider.value() as number;
     for (let i = 0; i < NB_ROWS; i++) {
       for (let j = 0; j < NB_COLS; j++) {
         setFillColor(this.p5js, this.matrixColors[t][i][j].color);

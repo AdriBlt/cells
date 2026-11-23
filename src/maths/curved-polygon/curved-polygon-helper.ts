@@ -1,4 +1,4 @@
-import * as p5 from "p5";
+import p5 from "p5";
 
 import { Point, squaredDistance } from "../../utils/points";
 import { Engine } from "../bezier/engine";

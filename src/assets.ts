@@ -13,5 +13,6 @@ export enum Asset {
 }
 
 export function getAssetPath(asset: Asset): string {
-    return process.env.PUBLIC_URL + '/data' + (asset as string);
+    // tslint:disable-next-line:whitespace (tslint does not understand import.meta)
+    return import.meta.env.BASE_URL + 'data' + (asset as string);
 }
