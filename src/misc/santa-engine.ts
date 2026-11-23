@@ -10,14 +10,14 @@ export class SantaEngine implements Santa {
   }
 
   public addCouple = (name1: string, name2: string): void => {
-    this.guests.push({
-      name: name1,
-      cannotGiftTo: [ name2 ],
-    });
-    this.guests.push({
-      name: name2,
-      cannotGiftTo: [ name1 ],
-    });
+    this.addSiblings(name1, name2);
+  }
+
+  public addSiblings = (...names: string[]): void => {
+    names.forEach(name => this.guests.push({
+      name,
+      cannotGiftTo: names.filter(other => other !== name),
+    }));
   }
 
   public addPerson = (name: string): void => {

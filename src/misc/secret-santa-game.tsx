@@ -1,45 +1,108 @@
 import * as React from "react";
+import { Button, Card, Collapse } from "react-bootstrap";
+import * as Icon from "react-bootstrap-icons";
 
 import { SantaBinaryEngine } from "./santa-binary-engine";
 import { SantaEngine } from "./santa-engine";
 import { GiftAssignmentResult, Santa } from "./santa/santa-model";
 
-const divider = "*************************************";
-export class SecretSantaGame extends React.Component<{}, { giftAssignment: GiftAssignmentResult[][] }>
-{
-  public state = { giftAssignment: [] as GiftAssignmentResult[][] };
-  private engines: Santa[] = [
-    getVerratEngine(),
-    getOlivierParentEngine(),
-    getOlivierParentEnfantEngine(),
-    getOlivierEnfantEngine()
+interface SantaDraw {
+  title: string;
+  engine: Santa;
+}
+
+interface SantaSection {
+  assignments: GiftAssignmentResult[];
+  isOpen: boolean;
+}
+
+interface SecretSantaState {
+  sections: SantaSection[];
+}
+
+export class SecretSantaGame extends React.Component<{}, SecretSantaState> {
+  public state: SecretSantaState;
+
+  private draws: SantaDraw[] = [
+    { title: "Verrat", engine: getVerratEngine() },
+    { title: "Verrat kids", engine: getVerratKidsEngine() },
+    { title: "Olivier : parents", engine: getOlivierParentEngine() },
+    { title: "Olivier : parents \u2192 enfants", engine: getOlivierParentEnfantEngine() },
+    { title: "Olivier : enfants", engine: getOlivierEnfantEngine() },
   ];
 
-  public componentDidMount() {
-    // COMPUTE
-    const assignments = this.engines.map(e => {
-      e.computeGifts();
-      return e.getAssignments();
-    });
-    this.setState({ giftAssignment: assignments });
+  constructor(props: {}) {
+    super(props);
+    this.state = {
+      sections: this.draws.map(d => ({ assignments: computeAssignments(d.engine), isOpen: true })),
+    };
   }
 
-  public render = () => {
+  public render = () => (
+    <div style={{ padding: 10 }}>
+      {this.draws.map((draw, i) => this.renderSection(draw, this.state.sections[i], i))}
+    </div>
+  );
 
+  private renderSection(draw: SantaDraw, section: SantaSection, index: number): JSX.Element {
     return (
-      <div>
-        <div>{divider}</div>
-        {this.state.giftAssignment.map((giftAssignment, i) => (
-          <>
-            <ul key={i}>
-              {giftAssignment.map(a => (<li>{`${a.from} offre un cadeau à ${a.to}`}</li>))}
-            </ul>
-            <div>{divider}</div>
-          </>
-        ))}
-      </div>
+      <Card key={draw.title} style={{ marginBottom: 10 }}>
+        <Card.Header style={{ display: "flex", alignItems: "center" }}>
+          <Button
+            variant="link"
+            onClick={() => this.toggleSection(index)}
+            aria-expanded={section.isOpen}
+            style={{ flex: 1, textAlign: "left", fontWeight: "bold", padding: 0 }}
+          >
+            <span style={{ marginRight: 5 }}>
+              {section.isOpen ? <Icon.ChevronUp /> : <Icon.ChevronDown />}
+            </span>
+            {draw.title}
+          </Button>
+          <Button
+            variant="outline-secondary"
+            size="sm"
+            title="Refaire ce tirage"
+            aria-label={`Refaire le tirage ${draw.title}`}
+            onClick={() => this.recomputeSection(index)}
+          >
+            <Icon.ArrowClockwise />
+          </Button>
+        </Card.Header>
+        <Collapse in={section.isOpen}>
+          <div>
+            <Card.Body>
+              <ul style={{ marginBottom: 0 }}>
+                {section.assignments.map(a => (
+                  <li key={`${a.from}->${a.to}`}>{`${a.from} offre un cadeau \u00e0 ${a.to}`}</li>
+                ))}
+              </ul>
+            </Card.Body>
+          </div>
+        </Collapse>
+      </Card>
     );
   }
+
+  private toggleSection(index: number): void {
+    this.updateSection(index, s => ({ ...s, isOpen: !s.isOpen }));
+  }
+
+  private recomputeSection(index: number): void {
+    const assignments = computeAssignments(this.draws[index].engine);
+    this.updateSection(index, s => ({ ...s, assignments }));
+  }
+
+  private updateSection(index: number, update: (s: SantaSection) => SantaSection): void {
+    this.setState(state => ({
+      sections: state.sections.map((s, i) => (i === index ? update(s) : s)),
+    }));
+  }
+}
+
+function computeAssignments(engine: Santa): GiftAssignmentResult[] {
+  engine.computeGifts();
+  return engine.getAssignments();
 }
 
 function getVerratEngine() {
@@ -76,6 +139,19 @@ function getVerratEngine() {
 
   engine.addIncompatibility('Emilie', 'Thérèse');
 
+  return engine;
+}
+
+function getVerratKidsEngine() {
+  const engine = new SantaEngine();
+  engine.addSiblings('Lucie', 'Clémence', 'Gabriel');
+  engine.addSiblings('Capucine');
+  engine.addSiblings('Raphaëlle', 'Sienne', 'Victoria');
+  engine.addSiblings('Jim');
+  engine.addSiblings('Baptiste', 'Tristant');
+  engine.addSiblings('Colette');
+  engine.addSiblings('Arthur', 'Sasha');
+  engine.addSiblings('Marin');
   return engine;
 }
 
