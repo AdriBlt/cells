@@ -1,5 +1,5 @@
 import { computed, observable } from "mobx";
-import * as p5 from "p5";
+import p5 from "p5";
 
 import { Complex } from "../../numbers/Complex";
 import { PlayableSketch } from "../../services/playable-sketch";

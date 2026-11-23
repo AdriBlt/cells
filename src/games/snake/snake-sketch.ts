@@ -1,4 +1,4 @@
-import * as p5 from "p5";
+import p5 from "p5";
 
 import { ProcessingSketch } from "../../services/processing.service";
 import { getKeyFromCode, KeyBoard } from "../../utils/keyboard";

@@ -18,12 +18,10 @@ interface AntGameState {
   directions: Array<AntDirections | null>;
 }
 
-const ANT_COLORS: AntTypeState[] = Object.keys(AntTypeState)
-  .filter((k) => typeof AntTypeState[k] === "number")
-  .map((k) => AntTypeState[k]);
-const ANT_DIRECTIONS: AntDirections[] = Object.keys(AntDirections)
-  .filter((k) => typeof AntDirections[k] === "number")
-  .map((k) => AntDirections[k]);
+const ANT_COLORS: AntTypeState[] = Object.values(AntTypeState)
+  .filter((v): v is AntTypeState => typeof v === "number");
+const ANT_DIRECTIONS: AntDirections[] = Object.values(AntDirections)
+  .filter((v): v is AntDirections => typeof v === "number");
 
 export class AntGame extends CellularAutomatonGame<AntMatrix, AntGameState> {
   public state: AntGameState = this.getState(new AntParameters());

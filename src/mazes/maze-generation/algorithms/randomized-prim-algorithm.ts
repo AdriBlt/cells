@@ -1,6 +1,5 @@
 
-import { Heap } from "src/utils/heap";
-
+import { Heap } from "../../../utils/heap";
 import { randomInt } from "../../../utils/random";
 import { BaseMazeGenerationAlgorithm } from "../base-maze-generation-algorithm";
 import { Cell, GenerationStatus, MazePath, Status } from "../model";

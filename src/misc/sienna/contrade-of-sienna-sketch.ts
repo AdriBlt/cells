@@ -1,4 +1,4 @@
-import * as p5 from "p5";
+import p5 from "p5";
 
 import { ProcessingSketch } from "../../services/processing.service";
 import { Color, COLORS, lerpColor, setBackground, setFillColor, setStrokeColor } from "../../utils/color";
